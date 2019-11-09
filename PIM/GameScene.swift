@@ -9,11 +9,11 @@
 import Foundation
 import SpriteKit
 
-let testMapBit = [[1,1,1,1,1,1,1,1,1,1,1,1,1,
-                   1,0,0,0,1,0,0,0,1,0,1,0,1,
-                   1,0,0,0,1,0,0,0,0,0,1,0,1,
-                   1,0,0,1,1,1,0,1,0,1,1,0,1,
-                   1,1,1,1,1,1,1,1,1,1,1,1,1]]
+let testMapBit =  [[1,1,1,1,1,1,1,1,1,1,1,1,1],
+                   [1,0,0,0,1,0,0,0,1,0,1,0,1],
+                   [1,0,0,0,1,0,0,0,0,0,1,0,1],
+                   [1,0,0,0,1,1,0,1,0,1,1,0,1],
+                   [1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
 class GameScene: SKScene{
     
@@ -22,22 +22,26 @@ class GameScene: SKScene{
     override func didMove(to view: SKView) {
         backgroundColor = SKColor.white
         
-        SKAction.run(addWall(testMap))
+        addWall(map: testMap)
     }
     
     var brickSize = CGSize()
     
-    func addWall(_ map: Map) -> Void{
-        self.brickSize.width = size.width / CGFloat(map.width)
-        self.brickSize.height = size.height / CGFloat(map.height)
+    func addWall(map: Map){
+        brickSize.width = size.width / CGFloat(map.width)
+        brickSize.height = size.height / CGFloat(map.height)
+        print(map.width,map.height)
+        
+        var positionX : CGFloat
+        var positionY : CGFloat
         
         for row in 0..<map.height{
-            let positionX = (CGFloat(row) + 0.5) * self.brickSize.height
+            positionY = (CGFloat(testMap.height) - CGFloat(row) - 0.5) * brickSize.height
             for col in 0..<map.width{
                 if map.mapBit[row][col] == 0{
-                    break
+                    continue
                 }
-                let positionY = (CGFloat(col) + 0.5) * self.brickSize.width
+                positionX = (CGFloat(col) + 0.5) * brickSize.width
                 addBrick(point: CGPoint(x: positionX, y: positionY), texture: map.texture)
             }
         }
@@ -45,9 +49,9 @@ class GameScene: SKScene{
     
     
     
-    func addBrick(point: CGPoint ,texture: String) -> Void{
+    func addBrick(point: CGPoint ,texture: String){
         let brick = SKSpriteNode(imageNamed: texture)
-        brick.scale(to: self.brickSize)
+        brick.scale(to: brickSize)
         brick.position = point
         brick.physicsBody = SKPhysicsBody(rectangleOf: brick.size)
         brick.physicsBody?.categoryBitMask = PhysicsCategory.wall

@@ -9,8 +9,8 @@
 import Foundation
 
 struct Map {
-    let mapBit: [[Int]]
-    let texture: String
+    var mapBit: [[Int]]
+    var texture: String
     var width: Int{
         get{
             return mapBit[0].count
@@ -25,6 +25,11 @@ struct Map {
     init(_ mapBit: [[Int]], imageName texture: String){
         self.mapBit = mapBit
         self.texture = texture
+    }
+    
+    init(){
+        self.mapBit = [[Int]]()
+        self.texture = ""
     }
 }
 
