@@ -17,27 +17,27 @@ let testMapBit =  [[1,1,1,1,1,1,1,1,1,1,1,1,1],
 
 class GameScene: SKScene{
     
-    let testMap = Map(testMapBit, imageName: "rockTexture")
+    let testMap = Map(testMapBit, imageName: "rockTexture", from: [1,1], to: [3,13])
     
     override func didMove(to view: SKView) {
         backgroundColor = SKColor.white
         
-        addWall(map: testMap)
+        addMap(map: testMap)
     }
     
     var brickSize = CGSize()
     
-    func addWall(map: Map){
-        brickSize.width = size.width / CGFloat(map.width)
-        brickSize.height = size.height / CGFloat(map.height)
+    func addMap(map: Map){
+        brickSize.width = size.width / map.width
+        brickSize.height = size.height / map.height
         print(map.width,map.height)
         
         var positionX : CGFloat
         var positionY : CGFloat
         
-        for row in 0..<map.height{
-            positionY = (CGFloat(testMap.height) - CGFloat(row) - 0.5) * brickSize.height
-            for col in 0..<map.width{
+        for row in 0..<Int(map.height){
+            positionY = (testMap.height - CGFloat(row) - 0.5) * brickSize.height
+            for col in 0..<Int(map.width){
                 if map.mapBit[row][col] == 0{
                     continue
                 }

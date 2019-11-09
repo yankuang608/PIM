@@ -7,29 +7,36 @@
 //
 
 import Foundation
+import SpriteKit
 
 struct Map {
-    var mapBit: [[Int]]
-    var texture: String
-    var width: Int{
+    let mapBit      :  [[Int]]
+    let texture     :  String
+    let startPoint  :  [Int]
+    let endPoint    :  [Int]
+    var width: CGFloat{
         get{
-            return mapBit[0].count
+            return CGFloat(mapBit[0].count)
         }
     }
-    var height: Int{
+    var height: CGFloat{
         get{
-            return mapBit.count
+            return CGFloat(mapBit.count)
         }
     }
     
-    init(_ mapBit: [[Int]], imageName texture: String){
+    init(_ mapBit: [[Int]], imageName texture: String, from startPoint: [Int], to endPoint: [Int]){
         self.mapBit = mapBit
         self.texture = texture
+        self.startPoint = startPoint
+        self.endPoint = endPoint
     }
     
     init(){
         self.mapBit = [[Int]]()
         self.texture = ""
+        self.startPoint = []
+        self.endPoint = []
     }
 }
 
