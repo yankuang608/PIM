@@ -28,15 +28,16 @@ class GameScene: SKScene{
     var brickSize = CGSize()
     
     func addMap(map: Map){
+        // compute brickSize
         brickSize.width = size.width / map.width
         brickSize.height = size.height / map.height
-        print(map.width,map.height)
         
         var positionX : CGFloat
         var positionY : CGFloat
         
+        // add bricks based on MapBit
         for row in 0..<Int(map.height){
-            positionY = (testMap.height - CGFloat(row) - 0.5) * brickSize.height
+            positionY = (map.height - CGFloat(row) - 0.5) * brickSize.height
             for col in 0..<Int(map.width){
                 if map.mapBit[row][col] == 0{
                     continue
@@ -45,6 +46,33 @@ class GameScene: SKScene{
                 addBrick(point: CGPoint(x: positionX, y: positionY), texture: map.texture)
             }
         }
+        
+        // add start point
+        let startPoint = SKSpriteNode(imageNamed: "startLine")
+        startPoint.scale(to: brickSize)
+        let startX = (map.startPoint[0] + 0.5) * brickSize.width
+        let startY = (map.height - map.startPoint[1] - 0.5) * brickSize.height
+        startPoint.position = CGPoint(x: startX, y: startY)
+        startPoint.physicsBody = SKPhysicsBody(rectangleOf: brickSize)
+        startPoint.physicsBody?.categoryBitMask = PhysicsCategory.start
+        startPoint.physicsBody?.collisionBitMask = PhysicsCategory.none
+        startPoint.physicsBody?.contactTestBitMask = PhysicsCategory.pet
+        startPoint.physicsBody?.isDynamic = false
+        
+        
+        // add finish point
+        let endPoint = SKSpriteNode(imageNamed: "finishFlag")
+        endPoint.scale(to: brickSize)
+        let endX = (map.endPoint[0] + 0.5) * brickSize.width
+        let endY = (map.height - map.endPoint[1] - 0.5) * brickSize.height
+        endPoint.position = CGPoint(x: endX, y: endY)
+        endPoint.physicsBody = SKPhysicsBody(rectangleOf: brickSize)
+        endPoint.physicsBody?.categoryBitMask = PhysicsCategory.end
+        endPoint.physicsBody?.collisionBitMask = PhysicsCategory.none
+        endPoint.physicsBody?.contactTestBitMask = PhysicsCategory.pet
+        endPoint.physicsBody?.isDynamic = false
+        
+        
     }
     
     

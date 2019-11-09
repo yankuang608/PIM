@@ -12,8 +12,8 @@ import SpriteKit
 struct Map {
     let mapBit      :  [[Int]]
     let texture     :  String
-    let startPoint  :  [Int]
-    let endPoint    :  [Int]
+    let startPoint  :  [CGFloat]
+    let endPoint    :  [CGFloat]
     var width: CGFloat{
         get{
             return CGFloat(mapBit[0].count)
@@ -28,8 +28,8 @@ struct Map {
     init(_ mapBit: [[Int]], imageName texture: String, from startPoint: [Int], to endPoint: [Int]){
         self.mapBit = mapBit
         self.texture = texture
-        self.startPoint = startPoint
-        self.endPoint = endPoint
+        self.startPoint = startPoint.map{CGFloat($0)}
+        self.endPoint = endPoint.map{CGFloat($0)}
     }
     
     init(){
@@ -45,4 +45,6 @@ struct PhysicsCategory {
     static let all    : UInt32 = UInt32.max
     static let wall   : UInt32 = 0b1       // 1
     static let pet    : UInt32 = 0b10      // 2
+    static let start  : UInt32 = 0b100     // 3
+    static let end    : UInt32 = 0b1000
 }
