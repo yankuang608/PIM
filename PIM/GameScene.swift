@@ -9,46 +9,53 @@
 import Foundation
 import SpriteKit
 
+let testMapBit = [[1,1,1,1,1,1,1,1,1,1,1,1,1,
+                   1,0,0,0,1,0,0,0,1,0,1,0,1,
+                   1,0,0,0,1,0,0,0,0,0,1,0,1,
+                   1,0,0,1,1,1,0,1,0,1,1,0,1,
+                   1,1,1,1,1,1,1,1,1,1,1,1,1]]
+
 class GameScene: SKScene{
+    
+    let testMap = Map(testMapBit, imageName: "rockTexture")
     
     override func didMove(to view: SKView) {
         backgroundColor = SKColor.white
-        run(SKAction.run(addWall))
+        
+        SKAction.run(addWall(testMap))
     }
     
+    var brickSize = CGSize()
     
-    
-    func addWall(){
-        let widthFragmentNum = CGFloat(36)
-        let heightFragmentNum = CGFloat(22)
+    func addWall(_ map: Map) -> Void{
+        self.brickSize.width = size.width / CGFloat(map.width)
+        self.brickSize.height = size.height / CGFloat(map.height)
         
-        let brickWidth = size.width/widthFragmentNum
-        let brickHeight = size.height/heightFragmentNum
-        
-        for i in 0..<Int(heightFragmentNum){
-            let brickLeft = SKSpriteNode(imageNamed: "rockTexture")
-            brickLeft.scale(to: CGSize(width: brickWidth, height: brickHeight))
-            brickLeft.position = CGPoint(x: brickWidth * 0.5 , y: brickHeight * (CGFloat(i)+0.5))
-            
-            let brickRight = SKSpriteNode(imageNamed: "rockTexture")
-            brickRight.scale(to: CGSize(width: brickWidth, height: brickHeight))
-            brickRight.position = CGPoint(x: brickWidth * (widthFragmentNum-0.5) , y: brickHeight * (CGFloat(i)+0.5))
-            
-            addChild(brickLeft)
-            addChild(brickRight)
-        }
-        
-        for i in 1..<Int(widthFragmentNum){
-            let brickUp = SKSpriteNode(imageNamed: "rockTexture")
-            brickUp.scale(to: CGSize(width: brickWidth, height: brickHeight))
-            brickUp.position = CGPoint(x: brickWidth * (CGFloat(i)+0.5) , y: brickHeight * (heightFragmentNum-0.5))
-
-            let brickDown = SKSpriteNode(imageNamed: "rockTexture")
-            brickDown.scale(to: CGSize(width: brickWidth, height: brickHeight))
-            brickDown.position = CGPoint(x: brickWidth * (CGFloat(i)+0.5) , y: brickHeight * 0.5)
-
-            addChild(brickUp)
-            addChild(brickDown)
+        for row in 0..<map.height{
+            let positionX = (CGFloat(row) + 0.5) * self.brickSize.height
+            for col in 0..<map.width{
+                if map.mapBit[row][col] == 0{
+                    break
+                }
+                let positionY = (CGFloat(col) + 0.5) * self.brickSize.width
+                addBrick(point: CGPoint(x: positionX, y: positionY), texture: map.texture)
+            }
         }
     }
+    
+    
+    
+    func addBrick(point: CGPoint ,texture: String) -> Void{
+        let brick = SKSpriteNode(imageNamed: texture)
+        brick.scale(to: self.brickSize)
+        brick.position = point
+        brick.physicsBody = SKPhysicsBody(rectangleOf: brick.size)
+        brick.physicsBody?.categoryBitMask = PhysicsCategory.wall
+        brick.physicsBody?.collisionBitMask = PhysicsCategory.pet     // collision happens between wall and pet, and causing pets to lose hp
+        brick.physicsBody?.contactTestBitMask = PhysicsCategory.none
+        brick.physicsBody?.isDynamic = false                          // of course, brick should be static
+        
+        addChild(brick)
+    }
+    
 }
