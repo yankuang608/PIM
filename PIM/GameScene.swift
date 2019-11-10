@@ -20,25 +20,41 @@ class GameScene: SKScene{
     //MARK: testMap
     let testMap = Map(testMapBit, imageName: "rockTexture", from: [1,1], to: [11,1])
     
-    
-    override func didMove(to view: SKView) {
-        backgroundColor = SKColor.brown
-        physicsWorld.gravity = .zero
-        
-        
-        addMap(map: testMap)
-        addHedgehog()
-    }
-    
     var brickSize = CGSize(){
         didSet{
-            petSize.width = brickSize.width * 0.0618         // pet Size is 0.618 of brick size
-            petSize.height = brickSize.height * 0.0618
+            petSize.width = brickSize.width * 0.3         // pet Size is 0.618 of brick size
+            petSize.height = brickSize.height * 0.3
         }
     }
     var petSize = CGSize()
     var startPoint = CGPoint()
     var endPoint = CGPoint()
+    
+    let motion = CMMotionManager()
+    
+    override func didMove(to view: SKView) {
+        physicsWorld.contactDelegate = self
+        backgroundColor = SKColor.white
+        
+        startMotionUpdate()
+        addMap(map: testMap)
+        addHedgehog()
+    }
+    
+    
+    func startMotionUpdate(){
+        if motion.isAccelerometerAvailable{
+            
+            motion.accelerometerUpdateInterval = 0.1
+            motion.startDeviceMotionUpdates(to: .main){
+                (data, error) in
+                guard let gravity = data?.gravity , error == nil else{return}
+                self.physicsWorld.gravity = CGVector(dx: gravity.x * 9.8, dy: gravity.y * 10)
+            }
+            
+            
+        }
+    }
     
     
     //MARK: add Map to the scene
@@ -62,20 +78,20 @@ class GameScene: SKScene{
             }
         }
         
-        // add start line
-        let startLine = SKSpriteNode(imageNamed: "startLine")
-        startLine.scale(to: brickSize)
+//        // add start line
+//        let startLine = SKSpriteNode(imageNamed: "startLine")
+//        startLine.scale(to: brickSize)
         startPoint.x = (map.startPoint[0] + 0.5) * brickSize.width
         startPoint.y = (map.height - map.startPoint[1] - 0.5) * brickSize.height
-        startLine.position = startPoint
-    
-        startLine.physicsBody = SKPhysicsBody(rectangleOf: brickSize)
-        startLine.physicsBody?.categoryBitMask = PhysicsCategory.start
-        startLine.physicsBody?.collisionBitMask = PhysicsCategory.none
-        startLine.physicsBody?.contactTestBitMask = PhysicsCategory.pet
-        startLine.physicsBody?.isDynamic = false
-        
-        addChild(startLine)
+//        startLine.position = startPoint
+//
+//        startLine.physicsBody = SKPhysicsBody(rectangleOf: brickSize)
+//        startLine.physicsBody?.categoryBitMask = PhysicsCategory.start
+//        startLine.physicsBody?.collisionBitMask = PhysicsCategory.none
+//        startLine.physicsBody?.contactTestBitMask = PhysicsCategory.none
+//        startLine.physicsBody?.isDynamic = true
+
+//        addChild(startLine)
         
         
         // add finish line
@@ -89,7 +105,7 @@ class GameScene: SKScene{
         endLine.physicsBody?.categoryBitMask = PhysicsCategory.end
         endLine.physicsBody?.collisionBitMask = PhysicsCategory.none
         endLine.physicsBody?.contactTestBitMask = PhysicsCategory.pet
-        endLine.physicsBody?.isDynamic = false
+        endLine.physicsBody?.isDynamic = true
         
         addChild(endLine)
         
@@ -105,39 +121,31 @@ class GameScene: SKScene{
         brick.physicsBody?.categoryBitMask = PhysicsCategory.wall
         brick.physicsBody?.collisionBitMask = PhysicsCategory.pet     // collision happens between wall and pet, and causing pets to lose hp
         brick.physicsBody?.contactTestBitMask = PhysicsCategory.none
-        brick.physicsBody?.isDynamic = false                          // of course, brick should be static
+        brick.physicsBody?.affectedByGravity = false
+        brick.physicsBody?.allowsRotation = false
+        brick.physicsBody?.pinned = true
         
         addChild(brick)
     }
     
-    let motion = CMMotionManager()
+    
     //Mark: add Pets to the scene
     func addHedgehog(){
         
         let hedgehog = SKSpriteNode(imageNamed: "hedgehog")
-        hedgehog.scale(to: brickSize)
+        hedgehog.scale(to: petSize)
         hedgehog.position = startPoint
-        hedgehog.physicsBody = SKPhysicsBody(circleOfRadius: max(hedgehog.size.width, hedgehog.size.height))
+        hedgehog.physicsBody = SKPhysicsBody(circleOfRadius: min(hedgehog.size.width, hedgehog.size.height))
         hedgehog.physicsBody?.categoryBitMask = PhysicsCategory.pet
         hedgehog.physicsBody?.collisionBitMask = PhysicsCategory.wall
         hedgehog.physicsBody?.contactTestBitMask = PhysicsCategory.none
+        hedgehog.physicsBody?.usesPreciseCollisionDetection = true
         hedgehog.physicsBody?.allowsRotation = true
         hedgehog.physicsBody?.affectedByGravity = true
         hedgehog.physicsBody?.isDynamic = true
-        
+
         addChild(hedgehog)
-        
-        if motion.isAccelerometerAvailable{
-    
-            motion.accelerometerUpdateInterval = 0.01
-            motion.startAccelerometerUpdates(to: .main){
-                (data, error) in
-                guard let accData = data, error == nil else{return}
-                self.physicsWorld.gravity = CGVector(dx: accData.acceleration.y * -50, dy: accData.acceleration.x * 50)
-            }
-            
-            
-        }
+
     }
     
 }
