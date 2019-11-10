@@ -36,24 +36,8 @@ class GameScene: SKScene{
         physicsWorld.contactDelegate = self
         backgroundColor = SKColor.white
         
-        startMotionUpdate()
         addMap(map: testMap)
         addHedgehog()
-    }
-    
-    
-    func startMotionUpdate(){
-        if motion.isAccelerometerAvailable{
-            
-            motion.accelerometerUpdateInterval = 0.1
-            motion.startDeviceMotionUpdates(to: .main){
-                (data, error) in
-                guard let gravity = data?.gravity , error == nil else{return}
-                self.physicsWorld.gravity = CGVector(dx: gravity.y * 9.8, dy: -(gravity.x * 9.8)) //using landscape pay attention with the xyz direction of
-            }
-            
-            
-        }
     }
     
     
@@ -125,8 +109,23 @@ class GameScene: SKScene{
     }
     
     
-    //Mark: add Pets to the scene
+    //Mark: add Hedgehog using accelerometer to control
+    func startMotionUpdate(){
+        if self.motion.isAccelerometerAvailable{
+            
+            self.motion.accelerometerUpdateInterval = 0.1
+            self.motion.startDeviceMotionUpdates(to: .main){
+                (data, error) in
+                guard let gravity = data?.gravity , error == nil else{return}
+                self.physicsWorld.gravity = CGVector(dx: gravity.y * 9.8, dy: -(gravity.x * 9.8)) //using landscape pay attention with the xyz direction
+            }
+            
+        }
+    }
+    
     func addHedgehog(){
+        
+        startMotionUpdate()
         
         let hedgehog = SKSpriteNode(imageNamed: "hedgehog")
         hedgehog.scale(to: petSize)
@@ -139,10 +138,12 @@ class GameScene: SKScene{
         hedgehog.physicsBody?.allowsRotation = true
         hedgehog.physicsBody?.affectedByGravity = true
 
-
         addChild(hedgehog)
 
     }
+    
+    //Mark: add Dog using SFSpeechRecognizer to control
+    
     
 }
 
