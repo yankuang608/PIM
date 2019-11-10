@@ -22,8 +22,8 @@ class GameScene: SKScene{
     
     var brickSize = CGSize(){
         didSet{
-            petSize.width = brickSize.width * 0.3         // pet Size is 0.618 of brick size
-            petSize.height = brickSize.height * 0.3
+            petSize.width = brickSize.width * 0.4         // pet Size is 0.618 of brick size
+            petSize.height = brickSize.height * 0.4
         }
     }
     var petSize = CGSize()
@@ -49,7 +49,7 @@ class GameScene: SKScene{
             motion.startDeviceMotionUpdates(to: .main){
                 (data, error) in
                 guard let gravity = data?.gravity , error == nil else{return}
-                self.physicsWorld.gravity = CGVector(dx: gravity.x * 9.8, dy: gravity.y * 10)
+                self.physicsWorld.gravity = CGVector(dx: gravity.y * 9.8, dy: -(gravity.x * 9.8)) //using landscape pay attention with the xyz direction of
             }
             
             
@@ -78,20 +78,14 @@ class GameScene: SKScene{
             }
         }
         
-//        // add start line
-//        let startLine = SKSpriteNode(imageNamed: "startLine")
-//        startLine.scale(to: brickSize)
+        // add start line
+        let startLine = SKSpriteNode(imageNamed: "startLine")
+        startLine.scale(to: brickSize)
         startPoint.x = (map.startPoint[0] + 0.5) * brickSize.width
         startPoint.y = (map.height - map.startPoint[1] - 0.5) * brickSize.height
-//        startLine.position = startPoint
-//
-//        startLine.physicsBody = SKPhysicsBody(rectangleOf: brickSize)
-//        startLine.physicsBody?.categoryBitMask = PhysicsCategory.start
-//        startLine.physicsBody?.collisionBitMask = PhysicsCategory.none
-//        startLine.physicsBody?.contactTestBitMask = PhysicsCategory.none
-//        startLine.physicsBody?.isDynamic = true
-
-//        addChild(startLine)
+        startLine.position = startPoint
+        
+        addChild(startLine)
         
         
         // add finish line
@@ -105,7 +99,9 @@ class GameScene: SKScene{
         endLine.physicsBody?.categoryBitMask = PhysicsCategory.end
         endLine.physicsBody?.collisionBitMask = PhysicsCategory.none
         endLine.physicsBody?.contactTestBitMask = PhysicsCategory.pet
-        endLine.physicsBody?.isDynamic = true
+        endLine.physicsBody?.affectedByGravity = false
+        endLine.physicsBody?.allowsRotation = false
+        endLine.physicsBody?.pinned = true
         
         addChild(endLine)
         
@@ -142,7 +138,7 @@ class GameScene: SKScene{
         hedgehog.physicsBody?.usesPreciseCollisionDetection = true
         hedgehog.physicsBody?.allowsRotation = true
         hedgehog.physicsBody?.affectedByGravity = true
-        hedgehog.physicsBody?.isDynamic = true
+
 
         addChild(hedgehog)
 
