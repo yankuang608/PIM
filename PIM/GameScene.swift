@@ -8,25 +8,40 @@
 
 import Foundation
 import SpriteKit
+import CoreMotion
 
 let testMapBit =  [[1,1,1,1,1,1,1,1,1,1,1,1,1],
-                   [1,0,0,0,1,0,0,0,1,0,1,0,1],
-                   [1,0,0,0,1,0,0,0,0,0,1,0,1],
-                   [1,0,0,0,1,1,0,1,0,1,1,0,1],
+                   [1,0,1,0,0,0,1,0,0,0,1,0,1],
+                   [1,0,1,0,1,0,1,0,1,0,1,0,1],
+                   [1,0,0,0,1,0,0,0,1,0,0,0,1],
                    [1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
 class GameScene: SKScene{
+    //MARK: testMap
+    let testMap = Map(testMapBit, imageName: "rockTexture", from: [1,1], to: [11,1])
     
-    let testMap = Map(testMapBit, imageName: "rockTexture", from: [1,1], to: [3,13])
     
     override func didMove(to view: SKView) {
-        backgroundColor = SKColor.white
+        backgroundColor = SKColor.brown
+        physicsWorld.gravity = .zero
+        
         
         addMap(map: testMap)
+        addHedgehog()
     }
     
-    var brickSize = CGSize()
+    var brickSize = CGSize(){
+        didSet{
+            petSize.width = brickSize.width * 0.0618         // pet Size is 0.618 of brick size
+            petSize.height = brickSize.height * 0.0618
+        }
+    }
+    var petSize = CGSize()
+    var startPoint = CGPoint()
+    var endPoint = CGPoint()
     
+    
+    //MARK: add Map to the scene
     func addMap(map: Map){
         // compute brickSize
         brickSize.width = size.width / map.width
@@ -47,34 +62,39 @@ class GameScene: SKScene{
             }
         }
         
-        // add start point
-        let startPoint = SKSpriteNode(imageNamed: "startLine")
-        startPoint.scale(to: brickSize)
-        let startX = (map.startPoint[0] + 0.5) * brickSize.width
-        let startY = (map.height - map.startPoint[1] - 0.5) * brickSize.height
-        startPoint.position = CGPoint(x: startX, y: startY)
-        startPoint.physicsBody = SKPhysicsBody(rectangleOf: brickSize)
-        startPoint.physicsBody?.categoryBitMask = PhysicsCategory.start
-        startPoint.physicsBody?.collisionBitMask = PhysicsCategory.none
-        startPoint.physicsBody?.contactTestBitMask = PhysicsCategory.pet
-        startPoint.physicsBody?.isDynamic = false
+        // add start line
+        let startLine = SKSpriteNode(imageNamed: "startLine")
+        startLine.scale(to: brickSize)
+        startPoint.x = (map.startPoint[0] + 0.5) * brickSize.width
+        startPoint.y = (map.height - map.startPoint[1] - 0.5) * brickSize.height
+        startLine.position = startPoint
+    
+        startLine.physicsBody = SKPhysicsBody(rectangleOf: brickSize)
+        startLine.physicsBody?.categoryBitMask = PhysicsCategory.start
+        startLine.physicsBody?.collisionBitMask = PhysicsCategory.none
+        startLine.physicsBody?.contactTestBitMask = PhysicsCategory.pet
+        startLine.physicsBody?.isDynamic = false
+        
+        addChild(startLine)
         
         
-        // add finish point
-        let endPoint = SKSpriteNode(imageNamed: "finishFlag")
-        endPoint.scale(to: brickSize)
-        let endX = (map.endPoint[0] + 0.5) * brickSize.width
-        let endY = (map.height - map.endPoint[1] - 0.5) * brickSize.height
-        endPoint.position = CGPoint(x: endX, y: endY)
-        endPoint.physicsBody = SKPhysicsBody(rectangleOf: brickSize)
-        endPoint.physicsBody?.categoryBitMask = PhysicsCategory.end
-        endPoint.physicsBody?.collisionBitMask = PhysicsCategory.none
-        endPoint.physicsBody?.contactTestBitMask = PhysicsCategory.pet
-        endPoint.physicsBody?.isDynamic = false
+        // add finish line
+        let endLine = SKSpriteNode(imageNamed: "finishFlag")
+        endLine.scale(to: brickSize)
+        endPoint.x = (map.endPoint[0] + 0.5) * brickSize.width
+        endPoint.y = (map.height - map.endPoint[1] - 0.5) * brickSize.height
+        endLine.position = endPoint
+        
+        endLine.physicsBody = SKPhysicsBody(rectangleOf: brickSize)
+        endLine.physicsBody?.categoryBitMask = PhysicsCategory.end
+        endLine.physicsBody?.collisionBitMask = PhysicsCategory.none
+        endLine.physicsBody?.contactTestBitMask = PhysicsCategory.pet
+        endLine.physicsBody?.isDynamic = false
+        
+        addChild(endLine)
         
         
     }
-    
     
     
     func addBrick(point: CGPoint ,texture: String){
@@ -89,5 +109,39 @@ class GameScene: SKScene{
         
         addChild(brick)
     }
+    
+    let motion = CMMotionManager()
+    //Mark: add Pets to the scene
+    func addHedgehog(){
+        
+        let hedgehog = SKSpriteNode(imageNamed: "hedgehog")
+        hedgehog.scale(to: brickSize)
+        hedgehog.position = startPoint
+        hedgehog.physicsBody = SKPhysicsBody(circleOfRadius: max(hedgehog.size.width, hedgehog.size.height))
+        hedgehog.physicsBody?.categoryBitMask = PhysicsCategory.pet
+        hedgehog.physicsBody?.collisionBitMask = PhysicsCategory.wall
+        hedgehog.physicsBody?.contactTestBitMask = PhysicsCategory.none
+        hedgehog.physicsBody?.allowsRotation = true
+        hedgehog.physicsBody?.affectedByGravity = true
+        hedgehog.physicsBody?.isDynamic = true
+        
+        addChild(hedgehog)
+        
+        if motion.isAccelerometerAvailable{
+    
+            motion.accelerometerUpdateInterval = 0.01
+            motion.startAccelerometerUpdates(to: .main){
+                (data, error) in
+                guard let accData = data, error == nil else{return}
+                self.physicsWorld.gravity = CGVector(dx: accData.acceleration.y * -50, dy: accData.acceleration.x * 50)
+            }
+            
+            
+        }
+    }
+    
+}
+
+extension GameScene: SKPhysicsContactDelegate{
     
 }
