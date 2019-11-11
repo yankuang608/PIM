@@ -9,6 +9,7 @@
 import Foundation
 import SpriteKit
 import CoreMotion
+import Speech
 
 let testMapBit =  [[1,1,1,1,1,1,1,1,1,1,1,1,1],
                    [1,0,1,0,0,0,1,0,0,0,1,0,1],
@@ -29,8 +30,7 @@ class GameScene: SKScene{
     var petSize = CGSize()
     var startPoint = CGPoint()
     var endPoint = CGPoint()
-    
-    let motion = CMMotionManager()
+
     
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
@@ -111,10 +111,11 @@ class GameScene: SKScene{
     
     //Mark: add Hedgehog using accelerometer to control
     func startMotionUpdate(){
-        if self.motion.isAccelerometerAvailable{
+        let motion = CMMotionManager()
+        if motion.isAccelerometerAvailable{
             
-            self.motion.accelerometerUpdateInterval = 0.1
-            self.motion.startDeviceMotionUpdates(to: .main){
+            motion.accelerometerUpdateInterval = 0.01
+            motion.startDeviceMotionUpdates(to: .main){
                 (data, error) in
                 guard let gravity = data?.gravity , error == nil else{return}
                 self.physicsWorld.gravity = CGVector(dx: gravity.y * 9.8, dy: -(gravity.x * 9.8)) //using landscape pay attention with the xyz direction
@@ -143,10 +144,130 @@ class GameScene: SKScene{
     }
     
     //Mark: add Dog using SFSpeechRecognizer to control
+    func addDog(){
+        let dog = SKSpriteNode(imageNamed: "dog")
+        dog.scale(to: petSize)
+        dog.position = startPoint
+        dog.physicsBody = SKPhysicsBody(rectangleOf: dog.size)
+        dog.physicsBody?.categoryBitMask = PhysicsCategory.pet
+        dog.physicsBody?.collisionBitMask = PhysicsCategory.wall
+        dog.physicsBody?.contactTestBitMask = PhysicsCategory.none
+        dog.physicsBody?.usesPreciseCollisionDetection = true
+        dog.physicsBody?.allowsRotation = true
+        dog.physicsBody?.affectedByGravity = false
+        
+        startSpeechRecognizer()
+        
+        
+    }
+    func startSpeechRecognizer(){
+        guard let recognizer = SFSpeechRecognizer() else{return}
+        let request = SFSpeechAudioBufferRecognitionRequest()
+        var recognitionTask: SFSpeechRecognitionTask?
+        if recognizer.isAvailable{
+            do {
+                try startRecording(request)
+            } catch let error {
+                print("There was a problem staring recording \(error.localizedDescription)")
+            }
+            recognitionTask = recognizer.recognitionTask(with: request, resultHandler: recognizerHandler)
+        }
+        
+    }
     
+    func startRecording(_ request: SFSpeechAudioBufferRecognitionRequest) throws{
+        let audioEngine = AVAudioEngine()
+        let node = audioEngine.inputNode
+        let recordingFormat = node.outputFormat(forBus: 0)
+        
+        node.installTap(onBus: 0, bufferSize: 1024,
+                        format: recordingFormat) {
+                            (buffer, _) in
+                            request.append(buffer)
+        }
+        
+        audioEngine.prepare()
+        try audioEngine.start()
+
+    }
+    
+    func recognizerHandler(result:SFSpeechRecognitionResult?, error: Error?) {
+        
+        if let transcription = result?.bestTranscription{
+            let bestString = transcription.formattedString
+            
+            var direction = ""
+            var index: String.Index
+            for segment in transcription.segments{
+                index = bestString.index(bestString.startIndex, offsetBy: segment.substringRange.location)
+                direction = String(bestString[index...])
+            }
+            controlDog(to: direction)
+            
+        }
+    }
+    
+    func controlDog(to direction:String){
+        switch direction {
+        case "up":
+            dog.up
+        case "left":
+            dog.left
+        case "down":
+            dog.down
+        case "right":
+            dog.right
+        default:
+            break
+        }
+        
+    }
     
 }
 
 extension GameScene: SKPhysicsContactDelegate{
     
+}
+
+extension SKSpriteNode{
+    var sceneSize: CGSize{
+        get{
+            if let scene = self.scene{
+                return scene.size
+            } else{
+                return CGSize()
+            }
+        }
+    }
+    // move up
+    func up(in duration: TimeInterval) {
+        let vector = CGVector(dx: self.position.x, dy: self.position.y + sceneSize.height)
+        let actionMove = SKAction.move(by: vector, duration: duration)
+        self.run(SKAction.sequence([actionMove, SKAction.removeFromParent()]))
+        
+    }
+    
+    //move left
+    func left(in duration:TimeInterval){
+        let vector = CGVector(dx: self.position.x - sceneSize.width, dy: self.position.y)
+        let actionMove = SKAction.move(by: vector, duration: duration)
+        self.run(SKAction.sequence([actionMove, SKAction.removeFromParent()]))
+
+    }
+    
+    //move down
+    func down(in duration:TimeInterval){
+        let vector = CGVector(dx: self.position.x, dy: self.position.y - sceneSize.height)
+        let actionMove = SKAction.move(by: vector, duration: duration)
+        self.run(SKAction.sequence([actionMove, SKAction.removeFromParent()]))
+        
+    }
+    
+    //move right
+    func right(in duration:TimeInterval){
+        let vector = CGVector(dx: self.position.x + sceneSize.width, dy: self.position.y)
+        let actionMove = SKAction.move(by: vector, duration: duration)
+        self.run(SKAction.sequence([actionMove, SKAction.removeFromParent()]))
+        
+    }
 }

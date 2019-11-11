@@ -28,6 +28,10 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Need mic to control dogs</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Need recognize &quot;up&quot;,&quot;left&quot;, etc to control dog</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>UISupportedInterfaceOrientations</key>
