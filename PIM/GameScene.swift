@@ -27,17 +27,21 @@ class GameScene: SKScene{
             petSize.height = brickSize.height * 0.4
         }
     }
+    let motion = CMMotionManager()
     var petSize = CGSize()
     var startPoint = CGPoint()
     var endPoint = CGPoint()
-
     
+    var pet = SKSpriteNode()
+
+    //MARK: didMove(to view:)
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
         backgroundColor = SKColor.white
         
         addMap(map: testMap)
-        addHedgehog()
+//        addHedgehog()
+        addDog()
     }
     
     
@@ -104,6 +108,7 @@ class GameScene: SKScene{
         brick.physicsBody?.affectedByGravity = false
         brick.physicsBody?.allowsRotation = false
         brick.physicsBody?.pinned = true
+        brick.physicsBody?.isDynamic = true
         
         addChild(brick)
     }
@@ -111,11 +116,11 @@ class GameScene: SKScene{
     
     //Mark: add Hedgehog using accelerometer to control
     func startMotionUpdate(){
-        let motion = CMMotionManager()
-        if motion.isAccelerometerAvailable{
+    
+        if self.motion.isAccelerometerAvailable{
             
-            motion.accelerometerUpdateInterval = 0.01
-            motion.startDeviceMotionUpdates(to: .main){
+            self.motion.accelerometerUpdateInterval = 0.01
+            self.motion.startDeviceMotionUpdates(to: .main){
                 (data, error) in
                 guard let gravity = data?.gravity , error == nil else{return}
                 self.physicsWorld.gravity = CGVector(dx: gravity.y * 9.8, dy: -(gravity.x * 9.8)) //using landscape pay attention with the xyz direction
@@ -138,6 +143,7 @@ class GameScene: SKScene{
         hedgehog.physicsBody?.usesPreciseCollisionDetection = true
         hedgehog.physicsBody?.allowsRotation = true
         hedgehog.physicsBody?.affectedByGravity = true
+        hedgehog.physicsBody?.isDynamic = true
 
         addChild(hedgehog)
 
@@ -145,32 +151,33 @@ class GameScene: SKScene{
     
     //Mark: add Dog using SFSpeechRecognizer to control
     func addDog(){
-        let dog = SKSpriteNode(imageNamed: "dog")
-        dog.scale(to: petSize)
-        dog.position = startPoint
-        dog.physicsBody = SKPhysicsBody(rectangleOf: dog.size)
-        dog.physicsBody?.categoryBitMask = PhysicsCategory.pet
-        dog.physicsBody?.collisionBitMask = PhysicsCategory.wall
-        dog.physicsBody?.contactTestBitMask = PhysicsCategory.none
-        dog.physicsBody?.usesPreciseCollisionDetection = true
-        dog.physicsBody?.allowsRotation = true
-        dog.physicsBody?.affectedByGravity = false
-        
         startSpeechRecognizer()
         
+        self.pet = SKSpriteNode(imageNamed: "dog")
+        self.pet.scale(to: petSize)
+        self.pet.position = startPoint
+        self.pet.physicsBody = SKPhysicsBody(rectangleOf: self.pet.size)
+        self.pet.physicsBody?.categoryBitMask = PhysicsCategory.pet
+        self.pet.physicsBody?.collisionBitMask = PhysicsCategory.wall
+        self.pet.physicsBody?.contactTestBitMask = PhysicsCategory.none
+        self.pet.physicsBody?.usesPreciseCollisionDetection = true
+        self.pet.physicsBody?.allowsRotation = true
+        self.pet.physicsBody?.affectedByGravity = false
         
+        addChild(self.pet)
+    
     }
     func startSpeechRecognizer(){
         guard let recognizer = SFSpeechRecognizer() else{return}
         let request = SFSpeechAudioBufferRecognitionRequest()
-        var recognitionTask: SFSpeechRecognitionTask?
+
         if recognizer.isAvailable{
             do {
                 try startRecording(request)
             } catch let error {
                 print("There was a problem staring recording \(error.localizedDescription)")
             }
-            recognitionTask = recognizer.recognitionTask(with: request, resultHandler: recognizerHandler)
+            recognizer.recognitionTask(with: request, resultHandler: recognizerHandler)
         }
         
     }
@@ -210,13 +217,13 @@ class GameScene: SKScene{
     func controlDog(to direction:String){
         switch direction {
         case "up":
-            dog.up
+            self.pet.up(withDuration: 2)
         case "left":
-            dog.left
+            self.pet.left(withDuration: 2)
         case "down":
-            dog.down
+            self.pet.down(withDuration: 2)
         case "right":
-            dog.right
+            self.pet.right(withDuration: 2)
         default:
             break
         }
@@ -229,6 +236,8 @@ extension GameScene: SKPhysicsContactDelegate{
     
 }
 
+//MARK: extend move "up","left","down","right" method to SKSpriteNode
+//the path length is fixed and using duration to control the speed
 extension SKSpriteNode{
     var sceneSize: CGSize{
         get{
@@ -240,7 +249,7 @@ extension SKSpriteNode{
         }
     }
     // move up
-    func up(in duration: TimeInterval) {
+    func up(withDuration duration: TimeInterval) {
         let vector = CGVector(dx: self.position.x, dy: self.position.y + sceneSize.height)
         let actionMove = SKAction.move(by: vector, duration: duration)
         self.run(SKAction.sequence([actionMove, SKAction.removeFromParent()]))
@@ -248,7 +257,7 @@ extension SKSpriteNode{
     }
     
     //move left
-    func left(in duration:TimeInterval){
+    func left(withDuration duration:TimeInterval){
         let vector = CGVector(dx: self.position.x - sceneSize.width, dy: self.position.y)
         let actionMove = SKAction.move(by: vector, duration: duration)
         self.run(SKAction.sequence([actionMove, SKAction.removeFromParent()]))
@@ -256,7 +265,7 @@ extension SKSpriteNode{
     }
     
     //move down
-    func down(in duration:TimeInterval){
+    func down(withDuration duration:TimeInterval){
         let vector = CGVector(dx: self.position.x, dy: self.position.y - sceneSize.height)
         let actionMove = SKAction.move(by: vector, duration: duration)
         self.run(SKAction.sequence([actionMove, SKAction.removeFromParent()]))
@@ -264,7 +273,7 @@ extension SKSpriteNode{
     }
     
     //move right
-    func right(in duration:TimeInterval){
+    func right(withDuration duration:TimeInterval){
         let vector = CGVector(dx: self.position.x + sceneSize.width, dy: self.position.y)
         let actionMove = SKAction.move(by: vector, duration: duration)
         self.run(SKAction.sequence([actionMove, SKAction.removeFromParent()]))
