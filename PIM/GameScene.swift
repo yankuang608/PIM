@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AVFoundation
 import SpriteKit
 import CoreMotion
 import Speech
@@ -17,7 +18,7 @@ let testMapBit =  [[1,1,1,1,1,1,1,1,1,1,1,1,1],
                    [1,0,0,0,1,0,0,0,1,0,0,0,1],
                    [1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
-class GameScene: SKScene{
+class GameScene: SKScene, SFSpeechRecognizerDelegate{
     //MARK: testMap
     let testMap = Map(testMapBit, imageName: "rockTexture", from: [1,1], to: [11,1])
     
@@ -28,6 +29,7 @@ class GameScene: SKScene{
         }
     }
     let motion = CMMotionManager()
+    
     var petSize = CGSize()
     var startPoint = CGPoint()
     var endPoint = CGPoint()
@@ -151,7 +153,12 @@ class GameScene: SKScene{
     
     //Mark: add Dog using SFSpeechRecognizer to control
     func addDog(){
-        startSpeechRecognizer()
+        do {
+            try recordAndRecognition()
+        } catch {
+            print("Recording not available!")
+        }
+        
         
         self.pet = SKSpriteNode(imageNamed: "dog")
         self.pet.scale(to: petSize)
@@ -167,52 +174,129 @@ class GameScene: SKScene{
         addChild(self.pet)
     
     }
-    func startSpeechRecognizer(){
-        guard let recognizer = SFSpeechRecognizer() else{return}
-        let request = SFSpeechAudioBufferRecognitionRequest()
-
-        if recognizer.isAvailable{
-            do {
-                try startRecording(request)
-            } catch let error {
-                print("There was a problem staring recording \(error.localizedDescription)")
+    
+    
+//    func recordAndRecognizeSpeech() {
+//
+//        let request = SFSpeechAudioBufferRecognitionRequest()
+//        let node = audioEngine.inputNode
+//
+//        guard let recognizer = SFSpeechRecognizer() else {return}
+//        if !recognizer.isAvailable{
+//            return
+//        }
+//        recognizer.recognitionTask(with: request, resultHandler: recognizerHandler)
+//
+//        let recordingFormat = node.outputFormat(forBus: 0)
+//        node.removeTap(onBus: 0)
+//        node.installTap(onBus: 0, bufferSize: 2048, format: recordingFormat){
+//            (buffer, _) in
+//            request.append(buffer)
+//        }
+//        audioEngine.prepare()
+//        do {
+//            try audioEngine.start()
+//        } catch{
+//            return print(error)
+//        }
+//    }
+    private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
+    
+    private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
+    
+    private var recognitionTask: SFSpeechRecognitionTask?
+    
+    private let audioEngine1 = AVAudioEngine()
+    
+    private func recordAndRecognition() throws {
+        
+        // Cancel the previous task if it's running.
+        recognitionTask?.cancel()
+        self.recognitionTask = nil
+        
+        // Configure the audio session for the app.
+        let audioSession = AVAudioSession.sharedInstance()
+        try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
+        try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+        let inputNode = audioEngine1.inputNode
+        
+        
+        // Create and configure the speech recognition request.
+        recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
+        guard let recognitionRequest = recognitionRequest else { fatalError("Unable to create a SFSpeechAudioBufferRecognitionRequest object") }
+        recognitionRequest.shouldReportPartialResults = true
+        
+        recognitionTask = speechRecognizer.recognitionTask(with: recognitionRequest) { result, error in
+            var isFinal = false
+            
+            if let result = result {
+                
+                isFinal = result.isFinal
+                let bestString = result.bestTranscription.formattedString
+                
+                var direction = ""
+                var index: String.Index
+                for segment in result.bestTranscription.segments{
+                    index = bestString.index(bestString.startIndex, offsetBy: segment.substringRange.location)
+                    direction = String(bestString[index...])
+                    print(direction)
+                }
+                self.controlDog(to: direction)
+                print("Text \(result.bestTranscription.formattedString)")
             }
-            recognizer.recognitionTask(with: request, resultHandler: recognizerHandler)
+            
+            if error != nil || isFinal {
+                // Stop recognizing speech if there is a problem.
+                self.audioEngine1.stop()
+                inputNode.removeTap(onBus: 0)
+                
+                self.recognitionRequest = nil
+                self.recognitionTask = nil
+                
+            }
         }
+        
+        // Configure the microphone input.
+        let recordingFormat = inputNode.outputFormat(forBus: 0)
+        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer: AVAudioPCMBuffer, when: AVAudioTime) in
+            self.recognitionRequest?.append(buffer)
+        }
+        
+        audioEngine1.prepare()
+        try audioEngine1.start()
         
     }
     
-    func startRecording(_ request: SFSpeechAudioBufferRecognitionRequest) throws{
-        let audioEngine = AVAudioEngine()
-        let node = audioEngine.inputNode
-        let recordingFormat = node.outputFormat(forBus: 0)
-        
-        node.installTap(onBus: 0, bufferSize: 1024,
-                        format: recordingFormat) {
-                            (buffer, _) in
-                            request.append(buffer)
-        }
-        
-        audioEngine.prepare()
-        try audioEngine.start()
-
-    }
-    
-    func recognizerHandler(result:SFSpeechRecognitionResult?, error: Error?) {
-        
-        if let transcription = result?.bestTranscription{
-            let bestString = transcription.formattedString
-            
-            var direction = ""
-            var index: String.Index
-            for segment in transcription.segments{
-                index = bestString.index(bestString.startIndex, offsetBy: segment.substringRange.location)
-                direction = String(bestString[index...])
-            }
-            controlDog(to: direction)
-            
-        }
-    }
+//    func recognizerHandler(result:SFSpeechRecognitionResult?, error: Error?) {
+//        var isFinal = false
+//
+//        if let result = result {
+//
+//            isFinal = result.isFinal
+//            let bestString = result.bestTranscription.formattedString
+//
+//            var direction = ""
+//            var index: String.Index
+//            for segment in result.bestTranscription.segments{
+//                index = bestString.index(bestString.startIndex, offsetBy: segment.substringRange.location)
+//                direction = String(bestString[index...])
+//                print(direction)
+//            }
+//            controlDog(to: direction)
+//            print("Text \(result.bestTranscription.formattedString)")
+//        }
+//
+//        if error != nil || isFinal {
+//            // Stop recognizing speech if there is a problem.
+//            self.audioEngine.stop()
+//            inputNode.removeTap(onBus: 0)
+//
+//            self.recognitionRequest = nil
+//            self.recognitionTask = nil
+//
+//        }
+//
+//    }
     
     func controlDog(to direction:String){
         switch direction {
