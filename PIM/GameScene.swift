@@ -44,7 +44,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         addMap(map: testMap)
         
         addTurtle()
-        setUpGestureRecognizer()
+        
         
     }
     
@@ -165,36 +165,25 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         self.pet.physicsBody?.collisionBitMask = PhysicsCategory.wall
         self.pet.physicsBody?.contactTestBitMask = PhysicsCategory.wall
         self.pet.physicsBody?.usesPreciseCollisionDetection = true
-        self.pet.physicsBody?.allowsRotation = false
+        self.pet.physicsBody?.allowsRotation = true
         self.pet.physicsBody?.affectedByGravity = false
         
         addChild(self.pet)
-    }
-    func setUpGestureRecognizer(){
-        
-        let directions: [UISwipeGestureRecognizer.Direction] = [ .left, .right, .up, .down]
-        for direction in directions{
-            let swipeRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(self.swipeHandler(_:)))
-            swipeRecognizer.direction = direction
-            self.view?.addGestureRecognizer(swipeRecognizer)
-        }
-        
+        addJoyStick()
     }
     
-    @objc func swipeHandler(_ sender: UIGestureRecognizer){
-        if let swipeGesture = sender as? UISwipeGestureRecognizer{
-            switch swipeGesture.direction {
-            case UISwipeGestureRecognizer.Direction.left:
-                self.pet.left(withDuration: 2)
-            case UISwipeGestureRecognizer.Direction.right:
-                self.pet.right(withDuration: 2)
-            case UISwipeGestureRecognizer.Direction.up:
-                self.pet.up(withDuration: 2)
-            case UISwipeGestureRecognizer.Direction.down:
-                self.pet.down(withDuration: 2)
-            default:
-                break
-            }
+    
+    func addJoyStick(){
+        let velocityMultiplier: CGFloat = 0.02
+        let joystick = AnalogJoystick(diameter: 60, colors: nil,
+                                      images: (UIImage(named: "substrate"), UIImage(named:"stick")))
+        joystick.position = CGPoint(x: 80, y: 80)
+        addChild(joystick)
+        
+        joystick.trackingHandler = { [unowned self] data in
+            self.pet.position = CGPoint(x: self.pet.position.x + (data.velocity.x * velocityMultiplier),
+                                         y: self.pet.position.y + (data.velocity.y * velocityMultiplier))
+            self.pet.zRotation = data.angular
         }
     }
     //Mark: add Dog using SFSpeechRecognizer to control
