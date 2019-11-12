@@ -380,13 +380,14 @@ extension GameScene: SKPhysicsContactDelegate{
         print(impulse)
         if impulse > 1{
             self.hp = max(0,self.hp - impulse)
+            self.healthBar.run(SKAction.resize(toWidth: (self.hp/self.fullHp) * 100, duration: 0.5))
+            
             if self.hp == 0{
                 let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
                 let gameOverScene = GameOverScene(size: self.size, won: false)
                 view?.presentScene(gameOverScene, transition: reveal)
             }
-    
-            self.healthBar.run(SKAction.resize(toWidth: (self.hp/self.fullHp) * 100, duration: 0.5))
+
         }
         
     }
