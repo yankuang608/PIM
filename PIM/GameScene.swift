@@ -35,6 +35,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     lazy var endPoint = CGPoint()
     
     lazy var pet = SKSpriteNode()
+    lazy var hp: CGFloat = 100
 
 
     //MARK: didMove(to view:)
@@ -44,8 +45,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         
         addMap(map: testMap)
         
-        addTurtle()
-        
+        addHedgehog()
         
     }
     
@@ -84,6 +84,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         startPoint.x = (map.startPoint[0] + 0.5) * brickSize.width
         startPoint.y = (map.height - map.startPoint[1] - 0.5) * brickSize.height
         startLine.position = startPoint
+        startLine.zPosition = -1
         
         addChild(startLine)
         
@@ -94,6 +95,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         endPoint.x = (map.endPoint[0] + 0.5) * brickSize.width
         endPoint.y = (map.height - map.endPoint[1] - 0.5) * brickSize.height
         endLine.position = endPoint
+        endLine.zPosition = 1
         
         endLine.physicsBody = SKPhysicsBody(rectangleOf: brickSize)
         endLine.physicsBody?.categoryBitMask = PhysicsCategory.end
@@ -113,10 +115,11 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         let brick = SKSpriteNode(imageNamed: texture)
         brick.scale(to: brickSize)
         brick.position = point
+        brick.zPosition = 0
         brick.physicsBody = SKPhysicsBody(rectangleOf: brick.size)
         brick.physicsBody?.categoryBitMask = PhysicsCategory.wall
         brick.physicsBody?.collisionBitMask = PhysicsCategory.pet     // collision happens between wall and pet, and causing pets to lose hp
-        brick.physicsBody?.contactTestBitMask = PhysicsCategory.none
+        brick.physicsBody?.contactTestBitMask = PhysicsCategory.pet
         brick.physicsBody?.affectedByGravity = false
         brick.physicsBody?.allowsRotation = false
         brick.physicsBody?.pinned = true
@@ -145,19 +148,20 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         
         startMotionUpdate()
         
-        let hedgehog = SKSpriteNode(imageNamed: "hedgehog")
-        hedgehog.scale(to: petSize)
-        hedgehog.position = startPoint
-        hedgehog.physicsBody = SKPhysicsBody(circleOfRadius: min(hedgehog.size.width, hedgehog.size.height))
-        hedgehog.physicsBody?.categoryBitMask = PhysicsCategory.pet
-        hedgehog.physicsBody?.collisionBitMask = PhysicsCategory.wall
-        hedgehog.physicsBody?.contactTestBitMask = PhysicsCategory.none
-        hedgehog.physicsBody?.usesPreciseCollisionDetection = true
-        hedgehog.physicsBody?.allowsRotation = true
-        hedgehog.physicsBody?.affectedByGravity = true
-        hedgehog.physicsBody?.isDynamic = true
+        self.pet = SKSpriteNode(imageNamed: "hedgehog")
+        self.pet.scale(to: petSize)
+        self.pet.position = startPoint
+        self.pet.zPosition = 1
+        self.pet.physicsBody = SKPhysicsBody(circleOfRadius: min(self.pet.size.width, self.pet.size.height))
+        self.pet.physicsBody?.categoryBitMask = PhysicsCategory.pet
+        self.pet.physicsBody?.collisionBitMask = PhysicsCategory.wall
+        self.pet.physicsBody?.contactTestBitMask = PhysicsCategory.wall
+        self.pet.physicsBody?.usesPreciseCollisionDetection = true
+        self.pet.physicsBody?.allowsRotation = true
+        self.pet.physicsBody?.affectedByGravity = true
+        self.pet.physicsBody?.isDynamic = true
 
-        addChild(hedgehog)
+        addChild(self.pet)
 
     }
     
@@ -168,6 +172,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         self.pet = SKSpriteNode(imageNamed: "turtle")
         self.pet.scale(to: petSize)
         self.pet.position = startPoint
+        self.pet.zPosition = 1
         self.pet.physicsBody = SKPhysicsBody(rectangleOf: self.pet.size)
         self.pet.physicsBody?.categoryBitMask = PhysicsCategory.pet
         self.pet.physicsBody?.collisionBitMask = PhysicsCategory.wall
@@ -194,6 +199,8 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
             self.pet.zRotation = data.angular
         }
     }
+    
+    
     //Mark: add Dog using SFSpeechRecognizer to control
 //    func addDog(){
 //        do {
@@ -304,11 +311,60 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
 //        }
 //
 //    }
-//
+    
+    
 }
 
+
+//MARK: collison Detaction
 extension GameScene: SKPhysicsContactDelegate{
+
+    func didBegin(_ contact: SKPhysicsContact) {
+        
+        let firstBody = min(contact.bodyA, contact.bodyB)     //returns physics body whose categorybitmask is smaller
+        let secondBody = max(contact.bodyA, contact.bodyB)
+        
+        
+        if ( (firstBody.categoryBitMask & PhysicsCategory.wall != 0) &&
+            (secondBody.categoryBitMask & PhysicsCategory.pet != 0) ) {
+            petCollideWithWall(physicsBodyOfWall: firstBody, physicsBodyBodyOfPet: secondBody)
+        } else if ( (firstBody.categoryBitMask & PhysicsCategory.pet != 0) &&
+            (secondBody.categoryBitMask & PhysicsCategory.end != 0) ) {
+            petReachFinishLine()
+        }
+    }
     
+    func petCollideWithWall(physicsBodyOfWall wall: SKPhysicsBody, physicsBodyBodyOfPet pet: SKPhysicsBody){
+        // collsion damage to pet is proportional to square of velocity
+        let damage = pet.velocity.square
+        if damage > 20{
+            self.hp -= damage
+        }
+        if self.hp <= 0{
+            //TODO: to game over scene
+        }
+        
+    }
+    
+    func petReachFinishLine(){
+        
+    }
+}
+
+extension SKPhysicsBody: Comparable {
+    public static func < (lhs: SKPhysicsBody, rhs: SKPhysicsBody) -> Bool{
+        if lhs.categoryBitMask < rhs.categoryBitMask{
+            return true
+        } else{
+            return false
+        }
+    }
+}
+
+extension CGVector{
+    var square: CGFloat{
+        return self.dx * self.dx + self.dy * self.dy
+    }
 }
 
 

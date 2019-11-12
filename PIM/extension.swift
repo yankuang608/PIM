@@ -16,6 +16,16 @@ struct ScreenSize {
     static let minLength  = min(ScreenSize.width, ScreenSize.height)
  }
 
+
+struct PhysicsCategory {
+    static let none   : UInt32 = 0
+    static let all    : UInt32 = UInt32.max
+    static let wall   : UInt32 = 0b1       // 1
+    static let pet    : UInt32 = 0b10      // 2
+    static let start  : UInt32 = 0b100     // 3
+    static let end    : UInt32 = 0b1000
+}
+
 //extend move "up","left","down","right" method to SKSpriteNode
 //the path length is fixed and using duration to control the speed
 extension SKSpriteNode{
