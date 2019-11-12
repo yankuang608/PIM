@@ -35,22 +35,32 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     lazy var endPoint = CGPoint()
     
     lazy var pet = SKSpriteNode()
-    lazy var hp: CGFloat = 100
+    let fullHp : CGFloat = 100
+    lazy var hp: CGFloat = fullHp
+    
+    lazy var healthBar = SKSpriteNode()
+    lazy var hpBarEdge = SKShapeNode()
+    
 
 
-    //MARK: didMove(to view:)
+    //MARK: Scene Life Cycle
+    override func willMove(from view: SKView) {
+        physicsWorld.gravity = .zero
+    }
+    
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
         backgroundColor = SKColor.white
         
         addMap(map: testMap)
+        addHealthBar()
         
         addHedgehog()
         
     }
     
     
-    //MARK: add Map to the scene
+    //MARK: add Map
     func addMap(map: Map){
         // compute brickSize
         brickSize.width = size.width / map.width
@@ -84,7 +94,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         startPoint.x = (map.startPoint[0] + 0.5) * brickSize.width
         startPoint.y = (map.height - map.startPoint[1] - 0.5) * brickSize.height
         startLine.position = startPoint
-        startLine.zPosition = -1
+        startLine.zPosition = 0
         
         addChild(startLine)
         
@@ -95,7 +105,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         endPoint.x = (map.endPoint[0] + 0.5) * brickSize.width
         endPoint.y = (map.height - map.endPoint[1] - 0.5) * brickSize.height
         endLine.position = endPoint
-        endLine.zPosition = 1
+        endLine.zPosition = 0
         
         endLine.physicsBody = SKPhysicsBody(rectangleOf: brickSize)
         endLine.physicsBody?.categoryBitMask = PhysicsCategory.end
@@ -111,11 +121,34 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     }
     
     
+    //MARK: add HealthBar
+    func addHealthBar(){
+        self.healthBar = SKSpriteNode()
+        self.healthBar.color = UIColor.red
+        self.healthBar.size = CGSize(width: 100, height: 25)
+        self.healthBar.position = CGPoint(x: size.width - 120, y: size.height - 50)
+        self.healthBar.anchorPoint = CGPoint(x: 0, y: 0.5)
+        self.healthBar.zPosition = 2
+        
+        addChild(healthBar)
+        
+        self.hpBarEdge = SKShapeNode(rect: healthBar.frame)
+        self.hpBarEdge.fillColor = UIColor.white
+        self.hpBarEdge.strokeColor = UIColor.blue
+        self.hpBarEdge.lineWidth = 8
+        self.hpBarEdge.zPosition = 1
+        
+        addChild(self.hpBarEdge)
+        
+    }
+    
+    
     func addBrick(point: CGPoint ,texture: String){
         let brick = SKSpriteNode(imageNamed: texture)
         brick.scale(to: brickSize)
         brick.position = point
         brick.zPosition = 0
+        
         brick.physicsBody = SKPhysicsBody(rectangleOf: brick.size)
         brick.physicsBody?.categoryBitMask = PhysicsCategory.wall
         brick.physicsBody?.collisionBitMask = PhysicsCategory.pet     // collision happens between wall and pet, and causing pets to lose hp
@@ -146,8 +179,6 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     func addHedgehog(){
         
-        startMotionUpdate()
-        
         self.pet = SKSpriteNode(imageNamed: "hedgehog")
         self.pet.scale(to: petSize)
         self.pet.position = startPoint
@@ -162,6 +193,8 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         self.pet.physicsBody?.isDynamic = true
 
         addChild(self.pet)
+        
+        startMotionUpdate()
 
     }
     
@@ -327,27 +360,36 @@ extension GameScene: SKPhysicsContactDelegate{
         
         if ( (firstBody.categoryBitMask & PhysicsCategory.wall != 0) &&
             (secondBody.categoryBitMask & PhysicsCategory.pet != 0) ) {
-            petCollideWithWall(physicsBodyOfWall: firstBody, physicsBodyBodyOfPet: secondBody)
+            
+            petCollideWithWall(contact.collisionImpulse)
+            
         } else if ( (firstBody.categoryBitMask & PhysicsCategory.pet != 0) &&
             (secondBody.categoryBitMask & PhysicsCategory.end != 0) ) {
+            
             petReachFinishLine()
         }
     }
     
-    func petCollideWithWall(physicsBodyOfWall wall: SKPhysicsBody, physicsBodyBodyOfPet pet: SKPhysicsBody){
-        // collsion damage to pet is proportional to square of velocity
-        let damage = pet.velocity.square
-        if damage > 20{
-            self.hp -= damage
-        }
-        if self.hp <= 0{
-            //TODO: to game over scene
+    func petCollideWithWall(_ impulse: CGFloat){
+        // collsion damage to pet is proportional to collosion impulse
+        
+        if impulse > 6{
+            self.hp = max(0,self.hp - impulse)
+            if self.hp == 0{
+                let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+                let gameOverScene = GameOverScene(size: self.size, won: false)
+                view?.presentScene(gameOverScene, transition: reveal)
+            }
+    
+            self.healthBar.run(SKAction.resize(toWidth: (self.hp/self.fullHp) * 100, duration: 0.5))
         }
         
     }
     
     func petReachFinishLine(){
-        
+        let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+        let gameOverScene = GameOverScene(size: self.size, won: true)
+        view?.presentScene(gameOverScene, transition: reveal)
     }
 }
 
@@ -361,10 +403,5 @@ extension SKPhysicsBody: Comparable {
     }
 }
 
-extension CGVector{
-    var square: CGFloat{
-        return self.dx * self.dx + self.dy * self.dy
-    }
-}
 
 

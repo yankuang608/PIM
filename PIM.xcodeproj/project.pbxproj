@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		366300162379E07300028310 /* extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366300152379E07300028310 /* extension.swift */; };
 		3663001C237A1D9000028310 /* AnalogJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3663001B237A1D8F00028310 /* AnalogJoystick.swift */; };
+		3663001E237A904C00028310 /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3663001D237A904C00028310 /* GameOverScene.swift */; };
 		36ED7EB42374F7730078BA7D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36ED7EB32374F7730078BA7D /* AppDelegate.swift */; };
 		36ED7EB62374F7730078BA7D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36ED7EB52374F7730078BA7D /* ViewController.swift */; };
 		36ED7EB92374F7730078BA7D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36ED7EB72374F7730078BA7D /* Main.storyboard */; };
@@ -22,6 +23,7 @@
 /* Begin PBXFileReference section */
 		366300152379E07300028310 /* extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extension.swift; sourceTree = "<group>"; };
 		3663001B237A1D8F00028310 /* AnalogJoystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalogJoystick.swift; sourceTree = "<group>"; };
+		3663001D237A904C00028310 /* GameOverScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
 		36ED7EB02374F7720078BA7D /* PIM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PIM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36ED7EB32374F7730078BA7D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		36ED7EB52374F7730078BA7D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -67,10 +69,11 @@
 				3663001B237A1D8F00028310 /* AnalogJoystick.swift */,
 				36ED7EB32374F7730078BA7D /* AppDelegate.swift */,
 				36ED7EB52374F7730078BA7D /* ViewController.swift */,
-				36EFC19F237613BF003192D9 /* GameScene.swift */,
 				36EFC1A123762CBE003192D9 /* Map.swift */,
+				36EFC19F237613BF003192D9 /* GameScene.swift */,
 				366300152379E07300028310 /* extension.swift */,
 				36EFC1A32377D470003192D9 /* OperationOverload.swift */,
+				3663001D237A904C00028310 /* GameOverScene.swift */,
 				36ED7EB72374F7730078BA7D /* Main.storyboard */,
 				36ED7EBA2374F7740078BA7D /* Assets.xcassets */,
 				36ED7EBC2374F7740078BA7D /* LaunchScreen.storyboard */,
@@ -152,6 +155,7 @@
 			files = (
 				36EFC1A42377D470003192D9 /* OperationOverload.swift in Sources */,
 				36EFC1A0237613BF003192D9 /* GameScene.swift in Sources */,
+				3663001E237A904C00028310 /* GameOverScene.swift in Sources */,
 				36ED7EB62374F7730078BA7D /* ViewController.swift in Sources */,
 				366300162379E07300028310 /* extension.swift in Sources */,
 				3663001C237A1D9000028310 /* AnalogJoystick.swift in Sources */,
