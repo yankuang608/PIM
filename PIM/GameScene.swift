@@ -20,7 +20,7 @@ let testMapBit =  [[1,1,1,1,1,1,1,1,1,1,1,1,1],
 
 class GameScene: SKScene, SFSpeechRecognizerDelegate{
     //MARK: testMap
-    let testMap = Map(testMapBit, imageName: "rockTexture", from: [1,1], to: [11,1])
+    let testMap = Map(testMapBit, brickImage: "brickTexture", backgroundImage: "Background", from: [1,1], to: [11,1])
     
     var brickSize = CGSize(){
         didSet{
@@ -30,11 +30,12 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     }
     let motion = CMMotionManager()
     
-    var petSize = CGSize()
-    var startPoint = CGPoint()
-    var endPoint = CGPoint()
+    lazy var petSize = CGSize()
+    lazy var startPoint = CGPoint()
+    lazy var endPoint = CGPoint()
     
-    var pet = SKSpriteNode()
+    lazy var pet = SKSpriteNode()
+
 
     //MARK: didMove(to view:)
     override func didMove(to view: SKView) {
@@ -57,6 +58,13 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         
         var positionX : CGFloat
         var positionY : CGFloat
+        
+        //add background
+        let background = SKSpriteNode(imageNamed: map.background)
+        background.position = CGPoint(x: size.width * 0.5, y: size.height * 0.5)
+        background.scale(to: size)
+        background.zPosition = -1
+        addChild(background)
         
         // add bricks based on MapBit
         for row in 0..<Int(map.height){

@@ -10,8 +10,8 @@ import Foundation
 import SpriteKit
 
 struct ScreenSize {
-    static let width      = UIScreen.main.bounds.width
-    static let height     = UIScreen.main.bounds.height
+    static let width      = UIScreen.main.bounds.height
+    static let height     = UIScreen.main.bounds.width
     static let maxLength  = max(ScreenSize.width, ScreenSize.height)
     static let minLength  = min(ScreenSize.width, ScreenSize.height)
  }
@@ -58,4 +58,5 @@ extension SKSpriteNode{
         self.run(actionMove)
         
     }
+    
 }
