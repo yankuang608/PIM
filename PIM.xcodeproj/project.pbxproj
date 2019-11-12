@@ -51,6 +51,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3662265A237B5BC800369028 /* Scene */ = {
+			isa = PBXGroup;
+			children = (
+				36622653237B207200369028 /* GameBeginScene.swift */,
+				36EFC19F237613BF003192D9 /* GameScene.swift */,
+				3663001D237A904C00028310 /* GameOverScene.swift */,
+			);
+			path = Scene;
+			sourceTree = "<group>";
+		};
+		3662265B237B5C0200369028 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				3663001B237A1D8F00028310 /* AnalogJoystick.swift */,
+				36622657237B492B00369028 /* FTButtonNode.swift */,
+				36EFC1A32377D470003192D9 /* OperationOverload.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
 		36ED7EA72374F7720078BA7D = {
 			isa = PBXGroup;
 			children = (
@@ -70,16 +90,12 @@
 		36ED7EB22374F7720078BA7D /* PIM */ = {
 			isa = PBXGroup;
 			children = (
-				3663001B237A1D8F00028310 /* AnalogJoystick.swift */,
+				3662265B237B5C0200369028 /* Helper */,
+				3662265A237B5BC800369028 /* Scene */,
 				36ED7EB32374F7730078BA7D /* AppDelegate.swift */,
 				36ED7EB52374F7730078BA7D /* ViewController.swift */,
 				36EFC1A123762CBE003192D9 /* Map.swift */,
-				36EFC19F237613BF003192D9 /* GameScene.swift */,
-				36622653237B207200369028 /* GameBeginScene.swift */,
 				366300152379E07300028310 /* extension.swift */,
-				36EFC1A32377D470003192D9 /* OperationOverload.swift */,
-				3663001D237A904C00028310 /* GameOverScene.swift */,
-				36622657237B492B00369028 /* FTButtonNode.swift */,
 				36ED7EB72374F7730078BA7D /* Main.storyboard */,
 				36ED7EBA2374F7740078BA7D /* Assets.xcassets */,
 				36ED7EBC2374F7740078BA7D /* LaunchScreen.storyboard */,

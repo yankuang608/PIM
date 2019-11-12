@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let scene = GameScene(size: view.bounds.size)
+        let scene = GameBeginScene(size: view.bounds.size)
         scene.scaleMode = .resizeFill
         
         let rootView = view as! SKView

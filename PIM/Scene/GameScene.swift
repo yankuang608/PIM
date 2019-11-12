@@ -19,9 +19,14 @@ let testMapBit =  [[1,1,1,1,1,1,1,1,1,1,1,1,1],
                    [1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
 class GameScene: SKScene, SFSpeechRecognizerDelegate{
+    // the buddy is set in GameBeginScene
+    lazy var buddy = String()
+    
     //MARK: testMap
     let testMap = Map(testMapBit, brickImage: "brickTexture", backgroundImage: "Background", from: [1,1], to: [11,1])
     
+    
+    //MARK: Parameters
     var brickSize = CGSize(){
         didSet{
             petSize.width = brickSize.width * 0.4         // pet Size is 0.618 of brick size
@@ -35,7 +40,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     lazy var endPoint = CGPoint()
     
     lazy var pet = SKSpriteNode()
-    let fullHp : CGFloat = 10
+    let fullHp : CGFloat = 50
     lazy var hp: CGFloat = fullHp
     
     lazy var healthBar = SKSpriteNode()
@@ -55,7 +60,8 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         addMap(map: testMap)
         addHealthBar()
         
-        addHedgehog()
+        if buddy == "hedgehog" { addHedgehog() }
+        if buddy == "turtle" { addTurtle() }
         
     }
     
@@ -377,7 +383,7 @@ extension GameScene: SKPhysicsContactDelegate{
     
     func petCollideWithWall(_ impulse: CGFloat){
         // collsion damage to pet is proportional to collosion impulse
-        print(impulse)
+    
         if impulse > 1{
             self.hp = max(0,self.hp - impulse)
             self.healthBar.run(SKAction.resize(toWidth: (self.hp/self.fullHp) * 100, duration: 0.5))
@@ -385,6 +391,7 @@ extension GameScene: SKPhysicsContactDelegate{
             if self.hp == 0{
                 let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
                 let gameOverScene = GameOverScene(size: self.size, won: false)
+                self.cleanup()
                 view?.presentScene(gameOverScene, transition: reveal)
             }
 
@@ -393,9 +400,18 @@ extension GameScene: SKPhysicsContactDelegate{
     }
     
     func petReachFinishLine(){
+        
         let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
         let gameOverScene = GameOverScene(size: self.size, won: true)
+        // TODO: stop thoes
+        self.cleanup()
         view?.presentScene(gameOverScene, transition: reveal)
+    }
+    
+    
+    // stop core motion, audioEngine, etc
+    func cleanup(){
+        self.motion.stopDeviceMotionUpdates()
     }
 }
 

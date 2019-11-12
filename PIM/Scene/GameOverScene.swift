@@ -16,7 +16,7 @@ class GameOverScene: SKScene {
         backgroundColor = SKColor.white
         
         // 2
-        let message = won ? "You Won!" : "You Lose :["
+        let message = won ? "You Won!" : "You Lose :("
         
         // 3
         let label = SKLabelNode(fontNamed: "BradleyHandITCTT-Bold")
@@ -33,7 +33,7 @@ class GameOverScene: SKScene {
                 // 5
                 guard let `self` = self else { return }
                 let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
-                let scene = GameScene(size: size)
+                let scene = GameBeginScene(size: size)
                 self.view?.presentScene(scene, transition:reveal)
             }
             ]))
