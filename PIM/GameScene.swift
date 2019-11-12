@@ -35,7 +35,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     lazy var endPoint = CGPoint()
     
     lazy var pet = SKSpriteNode()
-    let fullHp : CGFloat = 100
+    let fullHp : CGFloat = 10
     lazy var hp: CGFloat = fullHp
     
     lazy var healthBar = SKSpriteNode()
@@ -124,7 +124,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     //MARK: add HealthBar
     func addHealthBar(){
         self.healthBar = SKSpriteNode()
-        self.healthBar.color = UIColor.red
+        self.healthBar.color = UIColor.green
         self.healthBar.size = CGSize(width: 100, height: 25)
         self.healthBar.position = CGPoint(x: size.width - 120, y: size.height - 50)
         self.healthBar.anchorPoint = CGPoint(x: 0, y: 0.5)
@@ -133,9 +133,9 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         addChild(healthBar)
         
         self.hpBarEdge = SKShapeNode(rect: healthBar.frame)
-        self.hpBarEdge.fillColor = UIColor.white
-        self.hpBarEdge.strokeColor = UIColor.blue
-        self.hpBarEdge.lineWidth = 8
+        self.hpBarEdge.fillColor = UIColor.red
+        self.hpBarEdge.strokeColor = UIColor.red
+        self.hpBarEdge.lineWidth = 1
         self.hpBarEdge.zPosition = 1
         
         addChild(self.hpBarEdge)
@@ -179,11 +179,13 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     func addHedgehog(){
         
-        self.pet = SKSpriteNode(imageNamed: "hedgehog")
+        let hedgehogTexture = SKTexture(imageNamed: "hedgehog")
+        
+        self.pet = SKSpriteNode(texture: hedgehogTexture)
         self.pet.scale(to: petSize)
         self.pet.position = startPoint
         self.pet.zPosition = 1
-        self.pet.physicsBody = SKPhysicsBody(circleOfRadius: min(self.pet.size.width, self.pet.size.height))
+        self.pet.physicsBody = SKPhysicsBody(texture: hedgehogTexture, size: petSize)
         self.pet.physicsBody?.categoryBitMask = PhysicsCategory.pet
         self.pet.physicsBody?.collisionBitMask = PhysicsCategory.wall
         self.pet.physicsBody?.contactTestBitMask = PhysicsCategory.wall
@@ -220,16 +222,19 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     
     func addJoyStick(){
-        let velocityMultiplier: CGFloat = 0.02
+        let velocityMultiplier: CGFloat = 0.03
         let joystick = AnalogJoystick(diameter: 60, colors: nil,
                                       images: (UIImage(named: "substrate"), UIImage(named:"stick")))
         joystick.position = CGPoint(x: 80, y: 80)
         addChild(joystick)
         
-        joystick.trackingHandler = { [unowned self] data in
+        joystick.trackingHandler = { data in
             self.pet.position = CGPoint(x: self.pet.position.x + (data.velocity.x * velocityMultiplier),
                                          y: self.pet.position.y + (data.velocity.y * velocityMultiplier))
-            self.pet.zRotation = data.angular
+            
+//            self.pet.zRotation = data.angular
+            let multiplierForFaceDirection: CGFloat = data.angular >= 0 ? 1 : -1
+            self.pet.xScale = abs(self.pet.xScale) * multiplierForFaceDirection
         }
     }
     
@@ -372,8 +377,8 @@ extension GameScene: SKPhysicsContactDelegate{
     
     func petCollideWithWall(_ impulse: CGFloat){
         // collsion damage to pet is proportional to collosion impulse
-        
-        if impulse > 6{
+        print(impulse)
+        if impulse > 1{
             self.hp = max(0,self.hp - impulse)
             if self.hp == 0{
                 let reveal = SKTransition.flipHorizontal(withDuration: 0.5)

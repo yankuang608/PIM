@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36622654237B207200369028 /* GameBeginScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36622653237B207200369028 /* GameBeginScene.swift */; };
 		366300162379E07300028310 /* extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366300152379E07300028310 /* extension.swift */; };
 		3663001C237A1D9000028310 /* AnalogJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3663001B237A1D8F00028310 /* AnalogJoystick.swift */; };
 		3663001E237A904C00028310 /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3663001D237A904C00028310 /* GameOverScene.swift */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		36622653237B207200369028 /* GameBeginScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameBeginScene.swift; sourceTree = "<group>"; };
 		366300152379E07300028310 /* extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extension.swift; sourceTree = "<group>"; };
 		3663001B237A1D8F00028310 /* AnalogJoystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalogJoystick.swift; sourceTree = "<group>"; };
 		3663001D237A904C00028310 /* GameOverScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
@@ -71,6 +73,7 @@
 				36ED7EB52374F7730078BA7D /* ViewController.swift */,
 				36EFC1A123762CBE003192D9 /* Map.swift */,
 				36EFC19F237613BF003192D9 /* GameScene.swift */,
+				36622653237B207200369028 /* GameBeginScene.swift */,
 				366300152379E07300028310 /* extension.swift */,
 				36EFC1A32377D470003192D9 /* OperationOverload.swift */,
 				3663001D237A904C00028310 /* GameOverScene.swift */,
@@ -159,6 +162,7 @@
 				36ED7EB62374F7730078BA7D /* ViewController.swift in Sources */,
 				366300162379E07300028310 /* extension.swift in Sources */,
 				3663001C237A1D9000028310 /* AnalogJoystick.swift in Sources */,
+				36622654237B207200369028 /* GameBeginScene.swift in Sources */,
 				36EFC1A223762CBE003192D9 /* Map.swift in Sources */,
 				36ED7EB42374F7730078BA7D /* AppDelegate.swift in Sources */,
 			);
