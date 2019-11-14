@@ -33,7 +33,6 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
             petSize.height = brickSize.height * 0.4
         }
     }
-    let motion = CMMotionManager()
     
     lazy var petSize = CGSize()
     lazy var startPoint = CGPoint()
@@ -55,15 +54,17 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
-        backgroundColor = SKColor.white
+        
+        speechRecognizer.delegate = self
         
         addMap(map: testMap)
         addHealthBar()
         
         if buddy == "hedgehog" { addHedgehog() }
         if buddy == "turtle" { addTurtle() }
-        
+        if buddy == "dog" { addDog() }
     }
+    
     
     
     //MARK: add Map
@@ -169,6 +170,8 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     
     //MARK: add Hedgehog
+    private var motion = CMMotionManager()
+    
     func startMotionUpdate(){
     
         if self.motion.isAccelerometerAvailable{
@@ -196,6 +199,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         self.pet.physicsBody?.collisionBitMask = PhysicsCategory.wall
         self.pet.physicsBody?.contactTestBitMask = PhysicsCategory.wall
         self.pet.physicsBody?.usesPreciseCollisionDetection = true
+        self.pet.physicsBody?.mass = 1
         self.pet.physicsBody?.allowsRotation = true
         self.pet.physicsBody?.affectedByGravity = true
         self.pet.physicsBody?.isDynamic = true
@@ -228,15 +232,15 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     
     func addJoyStick(){
-        let velocityMultiplier: CGFloat = 0.03
+
         let joystick = AnalogJoystick(diameter: 60, colors: nil,
                                       images: (UIImage(named: "substrate"), UIImage(named:"stick")))
         joystick.position = CGPoint(x: 80, y: 80)
         addChild(joystick)
         
         joystick.trackingHandler = { data in
-            self.pet.position = CGPoint(x: self.pet.position.x + (data.velocity.x * velocityMultiplier),
-                                         y: self.pet.position.y + (data.velocity.y * velocityMultiplier))
+            self.pet.position = CGPoint(x: self.pet.position.x + (data.velocity.x * velocityMultiplier.turtle),
+                                         y: self.pet.position.y + (data.velocity.y * velocityMultiplier.turtle))
             
 //            self.pet.zRotation = data.angular
             let multiplierForFaceDirection: CGFloat = data.angular >= 0 ? 1 : -1
@@ -245,116 +249,122 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     }
     
     
-    //Mark: add Dog using SFSpeechRecognizer to control
-//    func addDog(){
-//        do {
-//            try recordAndRecognition()
-//        } catch {
-//            print("Recording not available!")
-//        }
-//
-//
-//        self.pet = SKSpriteNode(imageNamed: "dog")
-//        self.pet.scale(to: petSize)
-//        self.pet.position = startPoint
-//        self.pet.physicsBody = SKPhysicsBody(rectangleOf: self.pet.size)
-//        self.pet.physicsBody?.categoryBitMask = PhysicsCategory.pet
-//        self.pet.physicsBody?.collisionBitMask = PhysicsCategory.wall
-//        self.pet.physicsBody?.contactTestBitMask = PhysicsCategory.none
-//        self.pet.physicsBody?.usesPreciseCollisionDetection = true
-//        self.pet.physicsBody?.allowsRotation = true
-//        self.pet.physicsBody?.affectedByGravity = false
-//
-//        addChild(self.pet)
-//
-//    }
-//
-//
-//
-//    private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
-//
-//    private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
-//
-//    private var recognitionTask: SFSpeechRecognitionTask?
-//
-//    private let audioEngine1 = AVAudioEngine()
-//
-//    private func recordAndRecognition() throws {
-//
-//        // Cancel the previous task if it's running.
-//        recognitionTask?.cancel()
-//        self.recognitionTask = nil
-//
-//        // Configure the audio session for the app.
-//        let audioSession = AVAudioSession.sharedInstance()
-//        try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
-//        try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
-//        let inputNode = audioEngine1.inputNode
-//
-//
-//        // Create and configure the speech recognition request.
-//        recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
-//        guard let recognitionRequest = recognitionRequest else { fatalError("Unable to create a SFSpeechAudioBufferRecognitionRequest object") }
-//        recognitionRequest.shouldReportPartialResults = true
-//
-//        recognitionTask = speechRecognizer.recognitionTask(with: recognitionRequest) { result, error in
-//            var isFinal = false
-//
-//            if let result = result {
-//
-//                isFinal = result.isFinal
-//                let bestString = result.bestTranscription.formattedString
-//
-//                var direction = ""
-//                var index: String.Index
-//                for segment in result.bestTranscription.segments{
-//                    index = bestString.index(bestString.startIndex, offsetBy: segment.substringRange.location)
-//                    direction = String(bestString[index...])
-//                    print(direction)
-//                }
-//                self.controlDog(to: direction)
-//                print("Text \(result.bestTranscription.formattedString)")
-//            }
-//
-//            if error != nil || isFinal {
-//                // Stop recognizing speech if there is a problem.
-//                self.audioEngine1.stop()
-//                inputNode.removeTap(onBus: 0)
-//
-//                self.recognitionRequest = nil
-//                self.recognitionTask = nil
-//
-//            }
-//        }
-//
-//        // Configure the microphone input.
-//        let recordingFormat = inputNode.outputFormat(forBus: 0)
-//        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer: AVAudioPCMBuffer, when: AVAudioTime) in
-//            self.recognitionRequest?.append(buffer)
-//        }
-//
-//        audioEngine1.prepare()
-//        try audioEngine1.start()
-//
-//    }
-//
-//
-//
-//    func controlDog(to direction:String){
-//        switch direction {
-//        case "up":
-//            self.pet.up(withDuration: 2)
-//        case "left":
-//            self.pet.left(withDuration: 2)
-//        case "down":
-//            self.pet.down(withDuration: 2)
-//        case "right":
-//            self.pet.right(withDuration: 2)
-//        default:
-//            break
-//        }
-//
-//    }
+    //MARK: add Dog
+    func addDog(){
+        do {
+            try recordAndRecognition()
+        } catch {
+            print("Recording not available!")
+        }
+
+        let dogTexture = SKTexture(imageNamed: "dog")
+        
+        self.pet = SKSpriteNode(texture: dogTexture)
+        self.pet.scale(to: petSize)
+        self.pet.position = startPoint
+        self.pet.zPosition = 1
+        self.pet.physicsBody = SKPhysicsBody(texture: dogTexture, size: petSize)
+        self.pet.physicsBody?.categoryBitMask = PhysicsCategory.pet
+        self.pet.physicsBody?.collisionBitMask = PhysicsCategory.wall
+        self.pet.physicsBody?.contactTestBitMask = PhysicsCategory.wall
+        self.pet.physicsBody?.mass = 1
+        self.pet.physicsBody?.usesPreciseCollisionDetection = true
+        self.pet.physicsBody?.allowsRotation = false
+        self.pet.physicsBody?.affectedByGravity = false
+
+        addChild(self.pet)
+
+    }
+
+
+
+    private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
+    private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
+    private var recognitionTask: SFSpeechRecognitionTask?
+    private let audioEngineForSpeechRecognition = AVAudioEngine()  // Don't Use the default audioEngine in SKScene !!!
+
+    private func recordAndRecognition() throws {
+
+        // Cancel the previous task if it's running.
+        recognitionTask?.cancel()
+        self.recognitionTask = nil
+
+        // Configure the audio session for the app.
+        let audioSession = AVAudioSession()                         // Don't use AVAudioSession().sharedInstance  here !!!
+        try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
+        try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+        let inputNode = audioEngineForSpeechRecognition.inputNode
+        
+        // record last direction order
+        var lastDirection: String?
+
+        // Create and configure the speech recognition request.
+        recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
+        guard let recognitionRequest = recognitionRequest else { fatalError("Unable to create a SFSpeechAudioBufferRecognitionRequest object") }
+        recognitionRequest.shouldReportPartialResults = true // run the handler in recognitionTask periodically
+
+        recognitionTask = speechRecognizer.recognitionTask(with: recognitionRequest) { result, error in
+            var isFinal = false
+
+            if let result = result {
+
+                isFinal = result.isFinal
+                
+                let bestString = result.bestTranscription.formattedString
+
+                if let direction = bestString.components(separatedBy: " ").last{
+                    
+                    DispatchQueue.main.async {
+                        // The direction order is same as last time
+                        if lastDirection == nil || lastDirection != direction{
+                            self.controlDog(to: direction)
+                            lastDirection = direction
+                        }
+                        
+                    }
+                }
+                
+            }
+
+            if error != nil || isFinal {
+                // Stop recognizing speech if there is a problem.
+                self.audioEngineForSpeechRecognition.stop()
+                inputNode.removeTap(onBus: 0)
+
+                self.recognitionRequest = nil
+                self.recognitionTask = nil
+
+            }
+        }
+
+        // Configure the microphone input.
+        let recordingFormat = inputNode.outputFormat(forBus: 0)
+        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer: AVAudioPCMBuffer, when: AVAudioTime) in
+            self.recognitionRequest?.append(buffer)
+        }
+
+        audioEngineForSpeechRecognition.prepare()
+        try audioEngineForSpeechRecognition.start()
+
+    }
+    
+    
+    
+    func controlDog(to direction:String){
+        switch direction {
+        case "up":
+            self.pet.up(withDuration: 20)
+        case "left":
+            self.pet.left(withDuration: 20)
+        case "down":
+            self.pet.down(withDuration: 20)
+        case "right":
+            self.pet.right(withDuration: 20)
+        default:
+            break
+        }
+
+    }
     
     
 }
@@ -415,15 +425,6 @@ extension GameScene: SKPhysicsContactDelegate{
     }
 }
 
-extension SKPhysicsBody: Comparable {
-    public static func < (lhs: SKPhysicsBody, rhs: SKPhysicsBody) -> Bool{
-        if lhs.categoryBitMask < rhs.categoryBitMask{
-            return true
-        } else{
-            return false
-        }
-    }
-}
 
 
 
