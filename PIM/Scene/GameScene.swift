@@ -38,7 +38,11 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     lazy var startPoint = CGPoint()
     lazy var endPoint = CGPoint()
     
+    lazy var buttonSize = CGSize(width: size.width*0.1, height: size.width*0.1)
+    lazy var buttonPosition = CGPoint(x: buttonSize.width * 0.8, y: buttonSize.width * 0.8)
+    
     lazy var pet = SKSpriteNode()
+    
     let fullHp : CGFloat = 50
     lazy var hp: CGFloat = fullHp
     
@@ -232,15 +236,16 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     
     func addJoyStick(){
-
-        let joystick = AnalogJoystick(diameter: 60, colors: nil,
+        let velocityMultiplier: CGFloat = 0.02
+        let joystick = AnalogJoystick(diameter: buttonSize.width, colors: nil,
                                       images: (UIImage(named: "substrate"), UIImage(named:"stick")))
-        joystick.position = CGPoint(x: 80, y: 80)
+        joystick.position = buttonPosition
+        joystick.zPosition = 1
         addChild(joystick)
         
         joystick.trackingHandler = { data in
-            self.pet.position = CGPoint(x: self.pet.position.x + (data.velocity.x * velocityMultiplier.turtle),
-                                         y: self.pet.position.y + (data.velocity.y * velocityMultiplier.turtle))
+            self.pet.position = CGPoint(x: self.pet.position.x + (data.velocity.x * velocityMultiplier),
+                                         y: self.pet.position.y + (data.velocity.y * velocityMultiplier))
             
 //            self.pet.zRotation = data.angular
             let multiplierForFaceDirection: CGFloat = data.angular >= 0 ? 1 : -1
@@ -251,11 +256,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     //MARK: add Dog
     func addDog(){
-        do {
-            try recordAndRecognition()
-        } catch {
-            print("Recording not available!")
-        }
+        addMicButton()
 
         let dogTexture = SKTexture(imageNamed: "dog")
         
@@ -274,6 +275,38 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
 
         addChild(self.pet)
 
+    }
+    
+    lazy var micButton = FTButtonNode(normalTexture: SKTexture(imageNamed: "recording"),
+                                      selectedTexture: SKTexture(imageNamed: "speaking"),
+                                      disabledTexture: SKTexture(imageNamed: "recording"))
+    func addMicButton(){
+        
+        micButton.name = "mic"
+        micButton.scale(to: buttonSize)
+        micButton.position = buttonPosition
+        micButton.zPosition = 1
+        micButton.setButtonAction(target: self, triggerEvent: .TouchUpInside, action: #selector(micButtonTouchBegin))
+        micButton.setButtonAction(target: self, triggerEvent: .TouchDown, action: #selector(micButtonTouchEnded))
+        addChild(micButton)
+        
+    }
+    
+    // Tap down and hold the button for speaking recognition
+    @objc func micButtonTouchBegin(_ sender: FTButtonNode){
+        if audioEngineForSpeechRecognition.isRunning {
+            audioEngineForSpeechRecognition.stop()
+            recognitionRequest?.endAudio()
+        }
+    }
+    
+    
+    @objc func micButtonTouchEnded(_ sender: FTButtonNode){
+        do {
+            try recordAndRecognition()
+        } catch {
+            print("Recording Not Available")
+        }
     }
 
 
@@ -317,8 +350,9 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
                     DispatchQueue.main.async {
                         // The direction order is same as last time
                         if lastDirection == nil || lastDirection != direction{
-                            self.controlDog(to: direction)
+                            self.pet.applyImpulse(to: direction, by: petImpulse.dog )
                             lastDirection = direction
+                            print(direction)
                         }
                         
                     }
@@ -345,24 +379,6 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
 
         audioEngineForSpeechRecognition.prepare()
         try audioEngineForSpeechRecognition.start()
-
-    }
-    
-    
-    
-    func controlDog(to direction:String){
-        switch direction {
-        case "up":
-            self.pet.up(withDuration: 20)
-        case "left":
-            self.pet.left(withDuration: 20)
-        case "down":
-            self.pet.down(withDuration: 20)
-        case "right":
-            self.pet.right(withDuration: 20)
-        default:
-            break
-        }
 
     }
     
@@ -422,6 +438,8 @@ extension GameScene: SKPhysicsContactDelegate{
     // stop core motion, audioEngine, etc
     func cleanup(){
         self.motion.stopDeviceMotionUpdates()
+        audioEngineForSpeechRecognition.stop()
+        recognitionRequest?.endAudio()
     }
 }
 

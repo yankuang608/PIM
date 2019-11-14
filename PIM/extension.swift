@@ -27,10 +27,10 @@ struct PhysicsCategory {
 }
 
 
-struct velocityMultiplier {
+struct petImpulse {
     static let turtle   : CGFloat = 0.03
-    static let dog      : CGFloat = 0.02
-    static let hamster  : CGFloat = 0.04
+    static let dog      : CGFloat = 20
+    static let hamster  : CGFloat = 30
 }
 //extend move "up","left","down","right" method to SKSpriteNode
 //the path length is fixed and using duration to control the speed
@@ -44,41 +44,59 @@ extension SKSpriteNode{
             }
         }
     }
-    // move up
-    func up(withDuration duration: TimeInterval) {
-        let vector = CGVector(dx: 0, dy: 10)
-//        let actionMove = SKAction.move(by: vector, duration: duration)
-//        self.run(actionMove)
-        self.physicsBody?.applyImpulse(vector)
-        
-    }
+//    // move up
+//    func applyImpulseUp(by impulse: CGFloat) {
+//        let vector = CGVector(dx: 0, dy: impulse)
+//        self.physicsBody?.applyImpulse(vector)
+//        
+//    }
+//    
+//    //move left
+//    func applyImpulseLeft(by impulse: CGFloat) {
+//        self.xScale = abs(self.xScale) * -1         //change face direction
+//        
+//        let vector = CGVector(dx: -impulse, dy: 0)
+//        self.physicsBody?.applyImpulse(vector)
+//        
+//    }
+//    
+//    //move down
+//    func applyImpulseDown(by impulse: CGFloat) {
+//        let vector = CGVector(dx: 0, dy: -impulse)
+//        self.physicsBody?.applyImpulse(vector)
+//        
+//    }
+//    
+//    //move right
+//    func applyImpulseRight(by impulse: CGFloat) {
+//        self.xScale = abs(self.xScale)         //change face direction
+//        
+//        let vector = CGVector(dx: impulse, dy: 0)
+//        self.physicsBody?.applyImpulse(vector)
+//        
+//    }
     
-    //move left
-    func left(withDuration duration:TimeInterval){
-        self.xScale = abs(self.xScale) * -1
-        let vector = CGVector(dx: -10, dy: 0)
-//        let actionMove = SKAction.move(by: vector, duration: duration)
-//        self.run(actionMove)
-        self.physicsBody?.applyImpulse(vector)
-        
-    }
-    
-    //move down
-    func down(withDuration duration:TimeInterval){
-        let vector = CGVector(dx: 0, dy: -10)
-//        let actionMove = SKAction.move(by: vector, duration: duration)
-//        self.run(actionMove)
-        self.physicsBody?.applyImpulse(vector)
-    }
-    
-    //move right
-    func right(withDuration duration:TimeInterval){
-        self.xScale = abs(self.xScale)
-        let vector = CGVector(dx: 10, dy: 0)
-//        let actionMove = SKAction.move(by: vector, duration: duration)
-//        self.run(actionMove)
-        self.physicsBody?.applyImpulse(vector)
-        
+    func applyImpulse(to direction: String, by impulse: CGFloat) {
+        switch direction {
+        case "up":
+            let vector = CGVector(dx: 0, dy: impulse)
+            self.physicsBody?.applyImpulse(vector)
+        case "left":
+            self.xScale = abs(self.xScale) * -1         //change face direction
+            
+            let vector = CGVector(dx: -impulse, dy: 0)
+            self.physicsBody?.applyImpulse(vector)
+        case "down":
+            let vector = CGVector(dx: 0, dy: -impulse)
+            self.physicsBody?.applyImpulse(vector)
+        case "right":
+            self.xScale = abs(self.xScale)         //change face direction
+            
+            let vector = CGVector(dx: impulse, dy: 0)
+            self.physicsBody?.applyImpulse(vector)
+        default:
+            break
+        }
     }
     
 }
