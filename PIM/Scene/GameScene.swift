@@ -44,11 +44,22 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     lazy var pet = SKSpriteNode()
     
-    let fullHp : CGFloat = 50
-    lazy var hp: CGFloat = fullHp
+    let maxHit : CGFloat = 8                    // How many times can the pet hit the wall
+    lazy var currentHit : CGFloat = maxHit
     
     lazy var healthBar = SKSpriteNode()
     lazy var hpBarEdge = SKShapeNode()
+    
+    let motionOperationQueue = OperationQueue()
+    
+    lazy var ringBuffer = RingBuffer()
+    lazy var motionMagnitude = Double()
+    
+    let magThreshold: Double = 1     // The motion should be large enough to be detected
+    
+    lazy var isWaitingForMotionData: Bool = true
+    
+    let ModelRF = RandomForest()    // loading randomforest model
     
 
 
@@ -187,18 +198,19 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     //MARK: add Hedgehog
     private var motion = CMMotionManager()
     
-    func startMotionUpdate(){
+    func startMotionUpdate(withHandler handler: @escaping CMDeviceMotionHandler){
     
         if self.motion.isAccelerometerAvailable{
             
             self.motion.accelerometerUpdateInterval = 0.01
-            self.motion.startDeviceMotionUpdates(to: .main){
-                (data, error) in
-                guard let gravity = data?.gravity , error == nil else{return}
-                self.physicsWorld.gravity = CGVector(dx: gravity.y * 9.8, dy: -(gravity.x * 9.8)) //using landscape pay attention with the xyz direction
-            }
+            self.motion.startDeviceMotionUpdates(to: motionOperationQueue, withHandler: handler)
             
         }
+    }
+    
+    func hedgeHogMotionHandler(_ motionData: CMDeviceMotion?, error: Error?){
+        guard let gravity = motionData?.gravity else { return }
+        self.physicsWorld.gravity = CGVector(dx: gravity.y * 9.8, dy: -(gravity.x * 9.8)) //using landscape pay attention with the xyz direction
     }
     
     func addHedgehog(){
@@ -220,9 +232,10 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         self.pet.physicsBody?.isDynamic = true
 
         addChild(self.pet)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+            self.startMotionUpdate(withHandler: self.hedgeHogMotionHandler)
+        }
         
-        startMotionUpdate()
-
     }
     
     
@@ -394,6 +407,8 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
 
     }
     
+    
+    // MARK: addHamster
     func addHamster(){
         let hamsterTexture = SKTexture(imageNamed: "hamster")
         
@@ -412,34 +427,17 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         
         addChild(self.pet)
         
-        startHamsterMotionUpdate()
+        startMotionUpdate(withHandler: hamsterMotionHandle)
     }
-    
-    let motionOperationQueue = OperationQueue()
-    
-    var ringBuffer = RingBuffer()
-    var magnitude: Double!
-    let magThreshold: Double = 1
-    var isWaitingForMotionData: Bool = true
-    
-    let ModelRF = RandomForest()    // loading randomforest model
-    
-    func startHamsterMotionUpdate(){
-        if self.motion.isAccelerometerAvailable{
-            self.motion.deviceMotionUpdateInterval = 1.0/200
-            self.motion.startDeviceMotionUpdates(to: motionOperationQueue, withHandler: self.hamsterMotionHandle )
-        }
-    }
-    
     
     
     func hamsterMotionHandle(_ motionData:CMDeviceMotion?, error:Error?){
         if let accel = motionData?.userAcceleration {
             self.ringBuffer.addNewData(xData: accel.x, yData: accel.y, zData: accel.z)
-            magnitude = [accel.x, accel.y, accel.z].map{fabs($0)}.reduce(0,+)
+            motionMagnitude = [accel.x, accel.y, accel.z].map{fabs($0)}.reduce(0,+)
             
             //vibration is large enough to be detected
-            if magnitude > magThreshold {
+            if motionMagnitude > magThreshold {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                     self.largeMotionEventOccurred()
                 }
@@ -544,10 +542,10 @@ extension GameScene: SKPhysicsContactDelegate{
         // collsion damage to pet is proportional to collosion impulse
     
         if impulse > 1{
-            self.hp = max(0,self.hp - impulse)
-            self.healthBar.run(SKAction.resize(toWidth: (self.hp/self.fullHp) * 100, duration: 0.5))
+            self.currentHit -= 1
+            self.healthBar.run(SKAction.resize(toWidth: (self.currentHit/self.maxHit) * 100, duration: 0.5))
             
-            if self.hp == 0{
+            if self.currentHit == 0{
                 let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
                 let gameOverScene = GameOverScene(size: self.size, won: false)
                 self.cleanup()
