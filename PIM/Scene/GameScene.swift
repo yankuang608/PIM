@@ -30,7 +30,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     //MARK: Parameters
     var brickSize = CGSize(){
         didSet{
-            petSize.width = brickSize.width * 0.4         // pet Size is 0.618 of brick size
+            petSize.width = brickSize.width * 0.4         // pet Size is 0.4 of brick size
             petSize.height = brickSize.height * 0.4
         }
     }
@@ -44,7 +44,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     lazy var pet = SKSpriteNode()
     
-    let maxHit : CGFloat = 8                    // How many times can the pet hit the wall
+    let maxHit : CGFloat = 8              // Max times can the pet hit the wall
     lazy var currentHit : CGFloat = maxHit
     
     lazy var healthBar = SKSpriteNode()
@@ -55,12 +55,21 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     lazy var ringBuffer = RingBuffer()
     lazy var motionMagnitude = Double()
     
-    let magThreshold: Double = 1     // The motion should be large enough to be detected
+    let impulseThreshold: CGFloat = 1   // Threshold for dectecting pet hitting the wall
+    let magThreshold: Double = 1        // The motion should be large enough to be detected
     
     lazy var isWaitingForMotionData: Bool = true
     
     let ModelRF = RandomForest()    // loading randomforest model
     
+    var counter: Int = 3            // counting down at the beginning of game
+    let countDownLabel = SKLabelNode(fontNamed: "Chalkduster")
+    
+    let timeLabel = SKLabelNode(fontNamed: "Chalkduster")   // Timer
+    lazy var displayLink = CADisplayLink(target: self, selector: #selector(timeUpdateHandler))   // DisplayLink for updating Timer
+    var startDate: Date!
+    var gameTime: TimeInterval!
+
 
 
     //MARK: Scene Life Cycle
@@ -89,7 +98,77 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
             fatalError("Unknown pet")
         }
         
+        addTimer()
+        addCountDown()
+        
     }
+    
+    
+    
+    
+    // Originally from: https://stackoverflow.com/questions/35943307/ios-spritekit-countdown-before-game-starts by Steve Ives
+    func addCountDown(){
+        
+        countDownLabel.horizontalAlignmentMode = .center
+        countDownLabel.verticalAlignmentMode = .baseline
+        countDownLabel.position = CGPoint(x: size.width * 0.5, y: size.height * 0.6)
+        countDownLabel.fontSize = size.height * 0.25
+        countDownLabel.color = #colorLiteral(red: 0.9372549057, green: 0.3490196168, blue: 0.1921568662, alpha: 1)
+        countDownLabel.zPosition = 4
+        countDownLabel.text = "5"
+        addChild(countDownLabel)
+        
+        let counterDecrement = SKAction.sequence([SKAction.wait(forDuration: 1.0),
+                                                  SKAction.run(countdownAction)])
+        
+        run(SKAction.sequence([SKAction.repeat(counterDecrement, count: 3),SKAction.wait(forDuration: 0.4),
+                               SKAction.run(endCountDown)]))
+        
+    }
+    
+    func countdownAction() {
+        counter -= 1
+        countDownLabel.text = counter == 0 ? "Go !" : String(counter)   // substitude "Go" for 0
+    }
+    
+    func endCountDown() {
+        countDownLabel.run(SKAction.removeFromParent())    // remove the count down label from the scene
+        self.pet.physicsBody?.pinned = false               // pets can start running now
+        startTimer()
+    }
+    
+    
+    // initialize the timer label
+    func addTimer(){
+        timeLabel.horizontalAlignmentMode = .center
+        timeLabel.verticalAlignmentMode = .baseline
+        timeLabel.position = CGPoint(x: size.width * 0.5, y: size.height * 0.8)
+        timeLabel.fontSize = size.height * 0.15
+        timeLabel.color = #colorLiteral(red: 0.9372549057, green: 0.3490196168, blue: 0.1921568662, alpha: 1)
+        timeLabel.zPosition = 4
+        timeLabel.text = "00:00:00"
+        
+        addChild(timeLabel)
+    }
+    
+    
+    // start update the timer
+    func startTimer(){
+        
+        startDate = Date()
+        displayLink.add(to: .main, forMode: .default)
+        
+    }
+    
+    
+    // handler that update the timer
+    @objc func timeUpdateHandler(){
+        
+        let timeIntervalSinceStart = Date().timeIntervalSince(startDate)
+        timeLabel.text = timeIntervalSinceStart.stringFormat
+        
+    }
+
     
     
     
@@ -229,7 +308,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         self.pet.physicsBody?.mass = 1
         self.pet.physicsBody?.allowsRotation = true
         self.pet.physicsBody?.affectedByGravity = true
-        self.pet.physicsBody?.isDynamic = true
+        self.pet.physicsBody?.pinned = true
 
         addChild(self.pet)
         DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
@@ -253,6 +332,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         self.pet.physicsBody?.usesPreciseCollisionDetection = true
         self.pet.physicsBody?.allowsRotation = true
         self.pet.physicsBody?.affectedByGravity = false
+        self.pet.physicsBody?.pinned = true
         
         addChild(self.pet)
         addJoyStick()
@@ -296,6 +376,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         self.pet.physicsBody?.usesPreciseCollisionDetection = true
         self.pet.physicsBody?.allowsRotation = false
         self.pet.physicsBody?.affectedByGravity = false
+        self.pet.physicsBody?.pinned = true
 
         addChild(self.pet)
 
@@ -424,6 +505,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         self.pet.physicsBody?.usesPreciseCollisionDetection = true
         self.pet.physicsBody?.allowsRotation = false
         self.pet.physicsBody?.affectedByGravity = false
+        self.pet.physicsBody?.pinned = true
         
         addChild(self.pet)
         
@@ -538,10 +620,11 @@ extension GameScene: SKPhysicsContactDelegate{
         }
     }
     
+    
     func petCollideWithWall(_ impulse: CGFloat){
         // collsion damage to pet is proportional to collosion impulse
     
-        if impulse > 1{
+        if impulse > impulseThreshold{
             self.currentHit -= 1
             self.healthBar.run(SKAction.resize(toWidth: (self.currentHit/self.maxHit) * 100, duration: 0.5))
             
@@ -558,6 +641,8 @@ extension GameScene: SKPhysicsContactDelegate{
     
     func petReachFinishLine(){
         
+        // record the score for this round of game
+        gameTime = Date().timeIntervalSince(startDate)
         let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
         let gameOverScene = GameOverScene(size: self.size, won: true)
         // TODO: stop thoes
@@ -571,6 +656,7 @@ extension GameScene: SKPhysicsContactDelegate{
         self.motion.stopDeviceMotionUpdates()
         audioEngineForSpeechRecognition.stop()
         recognitionRequest?.endAudio()
+        displayLink.remove(from: .main, forMode: .default)
     }
 }
 

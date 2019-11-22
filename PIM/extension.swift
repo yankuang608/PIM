@@ -81,3 +81,20 @@ extension SKPhysicsBody: Comparable {
     }
 }
 
+
+//Originally from: https://stackoverflow.com/questions/28872450/conversion-from-nstimeinterval-to-hour-minutes-seconds-milliseconds-in-swift
+extension TimeInterval{
+    
+    var stringFormat: String{
+        get{
+            let time = NSInteger(self)
+            
+            let ms = Int((self.truncatingRemainder(dividingBy: 1)) * 1000)
+            let seconds = time % 60
+            let minutes = (time / 60) % 60
+            
+            return String(format: "%0.2d:%0.2d:%0.2d", minutes, seconds, ms)
+            
+        }
+    }
+}
