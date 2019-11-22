@@ -11,6 +11,7 @@ import AVFoundation
 import SpriteKit
 import CoreMotion
 import Speech
+import CoreML
 
 let testMapBit =  [[1,1,1,1,1,1,1,1,1,1,1,1,1],
                    [1,0,1,0,0,0,1,0,0,0,1,0,1],
@@ -64,9 +65,19 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         addMap(map: testMap)
         addHealthBar()
         
-        if buddy == "hedgehog" { addHedgehog() }
-        if buddy == "turtle" { addTurtle() }
-        if buddy == "dog" { addDog() }
+        switch buddy {
+        case "hedgehog":
+            addHedgehog()
+        case "turtle":
+            addTurtle()
+        case "dog":
+            addDog()
+        case "hamster":
+            addHamster()
+        default:
+            fatalError("Unknown pet")
+        }
+        
     }
     
     
@@ -286,26 +297,27 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         micButton.scale(to: buttonSize)
         micButton.position = buttonPosition
         micButton.zPosition = 1
-        micButton.setButtonAction(target: self, triggerEvent: .TouchUpInside, action: #selector(micButtonTouchBegin))
-        micButton.setButtonAction(target: self, triggerEvent: .TouchDown, action: #selector(micButtonTouchEnded))
+        micButton.setButtonAction(target: self, triggerEvent: .TouchDown, action: #selector(micButtonTouchBegin))
+        micButton.setButtonAction(target: self, triggerEvent: .TouchUpInside, action: #selector(micButtonTouchEnded))
         addChild(micButton)
         
     }
     
     // Tap down and hold the button for speaking recognition
     @objc func micButtonTouchBegin(_ sender: FTButtonNode){
-        if audioEngineForSpeechRecognition.isRunning {
-            audioEngineForSpeechRecognition.stop()
-            recognitionRequest?.endAudio()
+        do {
+            try recordAndRecognition()
+        } catch {
+            print("Recording Not Available")
         }
     }
     
     
     @objc func micButtonTouchEnded(_ sender: FTButtonNode){
-        do {
-            try recordAndRecognition()
-        } catch {
-            print("Recording Not Available")
+        if audioEngineForSpeechRecognition.isRunning {
+            audioEngineForSpeechRecognition.stop()
+            recognitionRequest?.endAudio()
+            inputNode.removeTap(onBus: 0)
         }
     }
 
@@ -315,7 +327,8 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngineForSpeechRecognition = AVAudioEngine()  // Don't Use the default audioEngine in SKScene !!!
-
+    private lazy var inputNode: AVAudioNode = audioEngineForSpeechRecognition.inputNode
+    
     private func recordAndRecognition() throws {
 
         // Cancel the previous task if it's running.
@@ -326,7 +339,6 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         let audioSession = AVAudioSession()                         // Don't use AVAudioSession().sharedInstance  here !!!
         try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
         try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
-        let inputNode = audioEngineForSpeechRecognition.inputNode
         
         // record last direction order
         var lastDirection: String?
@@ -352,7 +364,6 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
                         if lastDirection == nil || lastDirection != direction{
                             self.pet.applyImpulse(to: direction, by: petImpulse.dog )
                             lastDirection = direction
-                            print(direction)
                         }
                         
                     }
@@ -363,7 +374,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
             if error != nil || isFinal {
                 // Stop recognizing speech if there is a problem.
                 self.audioEngineForSpeechRecognition.stop()
-                inputNode.removeTap(onBus: 0)
+                self.inputNode.removeTap(onBus: 0)
 
                 self.recognitionRequest = nil
                 self.recognitionTask = nil
@@ -373,6 +384,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
 
         // Configure the microphone input.
         let recordingFormat = inputNode.outputFormat(forBus: 0)
+        inputNode.removeTap(onBus: 0)
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer: AVAudioPCMBuffer, when: AVAudioTime) in
             self.recognitionRequest?.append(buffer)
         }
@@ -380,6 +392,127 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         audioEngineForSpeechRecognition.prepare()
         try audioEngineForSpeechRecognition.start()
 
+    }
+    
+    func addHamster(){
+        let hamsterTexture = SKTexture(imageNamed: "hamster")
+        
+        self.pet = SKSpriteNode(texture: hamsterTexture)
+        self.pet.scale(to: petSize)
+        self.pet.position = startPoint
+        self.pet.zPosition = 1
+        self.pet.physicsBody = SKPhysicsBody(texture: hamsterTexture, size: petSize)
+        self.pet.physicsBody?.categoryBitMask = PhysicsCategory.pet
+        self.pet.physicsBody?.collisionBitMask = PhysicsCategory.wall
+        self.pet.physicsBody?.contactTestBitMask = PhysicsCategory.wall
+        self.pet.physicsBody?.mass = 1
+        self.pet.physicsBody?.usesPreciseCollisionDetection = true
+        self.pet.physicsBody?.allowsRotation = false
+        self.pet.physicsBody?.affectedByGravity = false
+        
+        addChild(self.pet)
+        
+        startHamsterMotionUpdate()
+    }
+    
+    let motionOperationQueue = OperationQueue()
+    
+    var ringBuffer = RingBuffer()
+    var magnitude: Double!
+    let magThreshold: Double = 1
+    var isWaitingForMotionData: Bool = true
+    
+    let ModelRF = RandomForest()    // loading randomforest model
+    
+    func startHamsterMotionUpdate(){
+        if self.motion.isAccelerometerAvailable{
+            self.motion.deviceMotionUpdateInterval = 1.0/200
+            self.motion.startDeviceMotionUpdates(to: motionOperationQueue, withHandler: self.hamsterMotionHandle )
+        }
+    }
+    
+    
+    
+    func hamsterMotionHandle(_ motionData:CMDeviceMotion?, error:Error?){
+        if let accel = motionData?.userAcceleration {
+            self.ringBuffer.addNewData(xData: accel.x, yData: accel.y, zData: accel.z)
+            magnitude = [accel.x, accel.y, accel.z].map{fabs($0)}.reduce(0,+)
+            
+            //vibration is large enough to be detected
+            if magnitude > magThreshold {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    self.largeMotionEventOccurred()
+                }
+            }
+        }
+        
+    }
+    
+    
+    
+    func largeMotionEventOccurred(){
+        if(self.isWaitingForMotionData)
+        {
+            self.isWaitingForMotionData = false
+            //predict a label
+            let seq = toMLMultiArray(self.ringBuffer.getDataAsVector())
+            guard let outputRF = try? ModelRF.prediction(input: seq) else {
+                fatalError("Model prediction error.")
+            }
+            
+            moveHamster(outputRF.classLabel)
+            
+            setDelayedWaitingToTrue(2.0)    // set latency in mainQueue for detecting next hamsterMotion
+            
+        }
+    }
+    
+    
+    func moveHamster(_ response:String){
+        
+        // The difference of direction is because of the training model process
+        
+        switch response {
+        case "tapUp":
+            self.pet.applyImpulse(to: "left", by: petImpulse.hamster)
+        case "tapRight":
+            self.pet.applyImpulse(to: "up", by: petImpulse.hamster)
+        case "tapDown":
+            self.pet.applyImpulse(to: "right", by: petImpulse.hamster)
+        case "tapLeft":
+            self.pet.applyImpulse(to: "down", by: petImpulse.hamster)
+        case "patUp":
+            self.pet.applyImpulse(to: "left", by: petImpulse.hamsterRun)
+        case "patRight":
+            self.pet.applyImpulse(to: "up", by: petImpulse.hamsterRun)
+        case "patDown":
+            self.pet.applyImpulse(to: "right", by: petImpulse.hamsterRun)
+        case "patLeft":
+            self.pet.applyImpulse(to: "down", by: petImpulse.hamsterRun)
+        default:
+            print("unkown direction")
+        }
+    }
+    
+    
+    // convert to ML Multi array
+    // https://github.com/akimach/GestureAI-CoreML-iOS/blob/master/GestureAI/GestureViewController.swift
+    private func toMLMultiArray(_ arr: [Double]) -> MLMultiArray {
+        guard let sequence = try? MLMultiArray(shape:[150], dataType:MLMultiArrayDataType.double) else {
+            fatalError("Unexpected runtime error. MLMultiArray could not be created")
+        }
+        let size = Int(truncating: sequence.shape[0])
+        for i in 0..<size {
+            sequence[i] = NSNumber(floatLiteral: arr[i])
+        }
+        return sequence
+    }
+    
+    
+    func setDelayedWaitingToTrue(_ time:Double){
+        DispatchQueue.main.asyncAfter(deadline: .now() + time, execute: {
+            self.isWaitingForMotionData = true
+        })
     }
     
     

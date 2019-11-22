@@ -28,9 +28,10 @@ struct PhysicsCategory {
 
 
 struct petImpulse {
-    static let turtle   : CGFloat = 0.03
-    static let dog      : CGFloat = 20
-    static let hamster  : CGFloat = 30
+    static let turtle      : CGFloat = 0.03
+    static let dog         : CGFloat = 20
+    static let hamster     : CGFloat = 20
+    static let hamsterRun  : CGFloat = 40
 }
 //extend move "up","left","down","right" method to SKSpriteNode
 //the path length is fixed and using duration to control the speed
@@ -44,37 +45,6 @@ extension SKSpriteNode{
             }
         }
     }
-//    // move up
-//    func applyImpulseUp(by impulse: CGFloat) {
-//        let vector = CGVector(dx: 0, dy: impulse)
-//        self.physicsBody?.applyImpulse(vector)
-//        
-//    }
-//    
-//    //move left
-//    func applyImpulseLeft(by impulse: CGFloat) {
-//        self.xScale = abs(self.xScale) * -1         //change face direction
-//        
-//        let vector = CGVector(dx: -impulse, dy: 0)
-//        self.physicsBody?.applyImpulse(vector)
-//        
-//    }
-//    
-//    //move down
-//    func applyImpulseDown(by impulse: CGFloat) {
-//        let vector = CGVector(dx: 0, dy: -impulse)
-//        self.physicsBody?.applyImpulse(vector)
-//        
-//    }
-//    
-//    //move right
-//    func applyImpulseRight(by impulse: CGFloat) {
-//        self.xScale = abs(self.xScale)         //change face direction
-//        
-//        let vector = CGVector(dx: impulse, dy: 0)
-//        self.physicsBody?.applyImpulse(vector)
-//        
-//    }
     
     func applyImpulse(to direction: String, by impulse: CGFloat) {
         switch direction {
