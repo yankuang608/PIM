@@ -50,6 +50,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     lazy var healthBar = SKSpriteNode()
     lazy var hpBarEdge = SKShapeNode()
     
+    private var motion = CMMotionManager()
     let motionOperationQueue = OperationQueue()
     
     lazy var ringBuffer = RingBuffer()
@@ -74,7 +75,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
 
     //MARK: Scene Life Cycle
     override func willMove(from view: SKView) {
-        physicsWorld.gravity = .zero
+        
     }
     
     override func didMove(to view: SKView) {
@@ -115,7 +116,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         countDownLabel.fontSize = size.height * 0.25
         countDownLabel.color = #colorLiteral(red: 0.9372549057, green: 0.3490196168, blue: 0.1921568662, alpha: 1)
         countDownLabel.zPosition = 4
-        countDownLabel.text = "5"
+        countDownLabel.text = "3"
         addChild(countDownLabel)
         
         let counterDecrement = SKAction.sequence([SKAction.wait(forDuration: 1.0),
@@ -146,7 +147,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         timeLabel.fontSize = size.height * 0.15
         timeLabel.color = #colorLiteral(red: 0.9372549057, green: 0.3490196168, blue: 0.1921568662, alpha: 1)
         timeLabel.zPosition = 4
-        timeLabel.text = "00:00:00"
+        timeLabel.text = "00:00"
         
         addChild(timeLabel)
     }
@@ -275,8 +276,6 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     
     //MARK: add Hedgehog
-    private var motion = CMMotionManager()
-    
     func startMotionUpdate(withHandler handler: @escaping CMDeviceMotionHandler){
     
         if self.motion.isAccelerometerAvailable{
@@ -311,9 +310,8 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         self.pet.physicsBody?.pinned = true
 
         addChild(self.pet)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-            self.startMotionUpdate(withHandler: self.hedgeHogMotionHandler)
-        }
+        
+        self.startMotionUpdate(withHandler: self.hedgeHogMotionHandler)
         
     }
     
@@ -509,11 +507,11 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         
         addChild(self.pet)
         
-        startMotionUpdate(withHandler: hamsterMotionHandle)
+        startMotionUpdate(withHandler: hamsterMotionHandler)
     }
     
     
-    func hamsterMotionHandle(_ motionData:CMDeviceMotion?, error:Error?){
+    func hamsterMotionHandler(_ motionData:CMDeviceMotion?, error:Error?){
         if let accel = motionData?.userAcceleration {
             self.ringBuffer.addNewData(xData: accel.x, yData: accel.y, zData: accel.z)
             motionMagnitude = [accel.x, accel.y, accel.z].map{fabs($0)}.reduce(0,+)
@@ -551,6 +549,8 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     func moveHamster(_ response:String){
         
         // The difference of direction is because of the training model process
+        
+        // TODO: pat -> Slam
         
         switch response {
         case "tapUp":
@@ -596,6 +596,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     }
     
     
+    var notHittingTheWall: Bool = true
 }
 
 
@@ -604,19 +605,28 @@ extension GameScene: SKPhysicsContactDelegate{
 
     func didBegin(_ contact: SKPhysicsContact) {
         
-        let firstBody = min(contact.bodyA, contact.bodyB)     //returns physics body whose categorybitmask is smaller
-        let secondBody = max(contact.bodyA, contact.bodyB)
-        
-        
-        if ( (firstBody.categoryBitMask & PhysicsCategory.wall != 0) &&
-            (secondBody.categoryBitMask & PhysicsCategory.pet != 0) ) {
+        DispatchQueue.main.async {
+            let firstBody = min(contact.bodyA, contact.bodyB)     //returns physics body whose categorybitmask is smaller
+            let secondBody = max(contact.bodyA, contact.bodyB)
             
-            petCollideWithWall(contact.collisionImpulse)
-            
-        } else if ( (firstBody.categoryBitMask & PhysicsCategory.pet != 0) &&
-            (secondBody.categoryBitMask & PhysicsCategory.end != 0) ) {
-            
-            petReachFinishLine()
+            //Set latency in detecting impulse, since one hit can cause multiple impulse
+            if ( (firstBody.categoryBitMask & PhysicsCategory.wall != 0) &&
+                (secondBody.categoryBitMask & PhysicsCategory.pet != 0) && self.notHittingTheWall) {
+                
+                self.notHittingTheWall = false
+                
+                self.petCollideWithWall(contact.collisionImpulse)
+                
+                //Set latency in collision, otherwise we will have multiple collision for one single hitting with the wall
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+                    self.notHittingTheWall = true
+                })
+                
+            } else if ( (firstBody.categoryBitMask & PhysicsCategory.pet != 0) &&
+                (secondBody.categoryBitMask & PhysicsCategory.end != 0) ) {
+                
+                self.petReachFinishLine()
+            }
         }
     }
     
@@ -624,17 +634,22 @@ extension GameScene: SKPhysicsContactDelegate{
     func petCollideWithWall(_ impulse: CGFloat){
         // collsion damage to pet is proportional to collosion impulse
     
-        if impulse > impulseThreshold{
-            self.currentHit -= 1
-            self.healthBar.run(SKAction.resize(toWidth: (self.currentHit/self.maxHit) * 100, duration: 0.5))
+        if impulse > impulseThreshold {
             
+            DispatchQueue.main.async {
+                self.currentHit -= 1
+                self.healthBar.run(SKAction.resize(toWidth: (self.currentHit/self.maxHit) * 100, duration: 0.5))
+            }
+        
+            // stay 0.2 second after game over
             if self.currentHit == 0{
-                let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+                let reveal = SKTransition.flipHorizontal(withDuration: 0.3)
                 let gameOverScene = GameOverScene(size: self.size, won: false)
                 self.cleanup()
-                view?.presentScene(gameOverScene, transition: reveal)
+                self.view?.presentScene(gameOverScene, transition: reveal)
+                
             }
-
+        
         }
         
     }
@@ -645,9 +660,8 @@ extension GameScene: SKPhysicsContactDelegate{
         gameTime = Date().timeIntervalSince(startDate)
         let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
         let gameOverScene = GameOverScene(size: self.size, won: true)
-        // TODO: stop thoes
         self.cleanup()
-        view?.presentScene(gameOverScene, transition: reveal)
+        self.view?.presentScene(gameOverScene, transition: reveal)
     }
     
     
@@ -656,7 +670,6 @@ extension GameScene: SKPhysicsContactDelegate{
         self.motion.stopDeviceMotionUpdates()
         audioEngineForSpeechRecognition.stop()
         recognitionRequest?.endAudio()
-        displayLink.remove(from: .main, forMode: .default)
     }
 }
 
