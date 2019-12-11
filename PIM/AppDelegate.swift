@@ -12,7 +12,13 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var multiplayer = false
 
-
+    func startGame() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: "game_screen")
+        window?.rootViewController = viewController
+        window?.makeKeyAndVisible()
+    }
+    
 }
-
