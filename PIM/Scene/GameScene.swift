@@ -13,19 +13,53 @@ import CoreMotion
 import Speech
 import CoreML
 
-let testMapBit =  [[1,1,1,1,1,1,1,1,1,1,1,1,1],
-                   [1,0,1,0,0,0,1,0,0,0,1,0,1],
-                   [1,0,1,0,1,0,1,0,1,0,1,0,1],
-                   [1,0,0,0,1,0,0,0,1,0,0,0,1],
-                   [1,1,1,1,1,1,1,1,1,1,1,1,1]]
+let testMapBitEasy =  [[1,1,1,1,1,1,1,1,1,1,1,1,1],
+                       [1,0,1,0,0,0,1,0,0,0,1,0,1],
+                       [1,0,1,0,1,0,1,0,1,0,1,0,1],
+                       [1,0,0,0,1,0,0,0,1,0,0,0,1],
+                       [1,1,1,1,1,1,1,1,1,1,1,1,1]]
+
+let testMapBitPractice = [[1,1,1,1,1,1,1,1,1,1,1,1,1],
+                          [1,1,1,1,1,1,1,1,1,1,1,1,1],
+                          [0,0,0,0,0,0,0,0,0,0,0,0,0],
+                          [1,1,1,1,1,1,1,1,1,1,1,1,1],
+                          [1,1,1,1,1,1,1,1,1,1,1,1,1]]
+
+let testMapBitHard = [[0,1,0,0,0,1,1,1,1,1,0,0,0],
+                      [0,0,0,1,0,0,1,1,1,1,0,1,0],
+                      [1,1,1,1,1,0,0,0,1,0,0,1,0],
+                      [1,1,1,1,1,1,1,0,1,0,1,1,0],
+                      [1,1,1,1,0,0,0,0,1,0,1,0,0],
+                      [1,1,1,1,0,1,1,1,1,0,1,0,1],
+                      [1,1,1,1,0,0,0,0,0,0,1,0,0]]
+
+let testMapBitMaze = [[0,0,0,0,0,0,0,0,0,0,0,0,1],
+                      [0,1,1,1,0,0,1,1,1,0,1,0,1],
+                      [0,0,0,0,0,1,1,0,0,0,1,0,1],
+                      [1,0,1,1,0,1,1,0,1,0,1,0,0],
+                      [1,0,1,1,0,1,1,0,1,0,0,0,0],
+                      [1,0,0,1,1,0,0,0,0,0,1,1,0],
+                      [0,1,0,1,1,0,1,0,1,0,1,1,0],
+                      [0,0,0,0,0,0,1,0,1,0,1,0,0],
+                      [0,1,0,1,1,0,1,0,1,0,1,0,1],
+                      [0,1,1,0,1,0,1,0,1,1,1,0,0],
+                      [0,0,1,0,0,0,1,0,0,0,1,0,0],
+                      [1,0,1,0,1,0,1,1,1,0,1,1,1],
+                      [1,0,0,1,1,0,1,1,1,0,0,0,0]]
+
 
 class GameScene: SKScene, SFSpeechRecognizerDelegate{
     // the buddy is set in GameBeginScene
     lazy var buddy = String()
     
     //MARK: testMap
-    let testMap = Map(testMapBit, brickImage: "brickTexture", backgroundImage: "Background", from: [1,1], to: [11,1])
+    let testMapEasy = Map(testMapBitEasy, brickImage: "brickTexture", backgroundImage: "Background", from: [1,1], to: [11,1])
     
+    let testMapPractice = Map(testMapBitPractice, brickImage: "brickTexture", backgroundImage: "Background", from: [0,2], to: [12,2])
+    
+    let testMapHard = Map(testMapBitHard, brickImage: "brickTexture", backgroundImage: "Background", from: [0,11], to: [11,0])
+    
+    let testMapMaze = Map(testMapBitMaze, brickImage: "brickTexture", backgroundImage: "Background", from: [0,0], to: [12,12])
     
     //MARK: Parameters
     var brickSize = CGSize(){
@@ -83,7 +117,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         
         speechRecognizer.delegate = self
         
-        addMap(map: testMap)
+        addMap(map: testMapMaze)
         addHealthBar()
         
         switch buddy {
@@ -239,7 +273,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         self.healthBar = SKSpriteNode()
         self.healthBar.color = UIColor.green
         self.healthBar.size = CGSize(width: 100, height: 25)
-        self.healthBar.position = CGPoint(x: size.width - 120, y: size.height - 50)
+        self.healthBar.position = CGPoint(x: size.width - 110, y: size.height - 20)
         self.healthBar.anchorPoint = CGPoint(x: 0, y: 0.5)
         self.healthBar.zPosition = 2
         

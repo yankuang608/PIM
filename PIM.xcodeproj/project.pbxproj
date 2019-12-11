@@ -347,13 +347,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = A7CFZA45RZ;
+				DEVELOPMENT_TEAM = GT9P23M77F;
 				INFOPLIST_FILE = PIM/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = yankuang608.personal.PIM;
+				PRODUCT_BUNDLE_IDENTIFIER = "yankuang608.personal.PIM-MapTest";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -365,13 +365,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = A7CFZA45RZ;
+				DEVELOPMENT_TEAM = GT9P23M77F;
 				INFOPLIST_FILE = PIM/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = yankuang608.personal.PIM;
+				PRODUCT_BUNDLE_IDENTIFIER = "yankuang608.personal.PIM-MapTest";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
