@@ -9,9 +9,12 @@ import UIKit
 import SpriteKit
 
 class ViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // authenticate the player with game center
+        GameCenter.shared.authenticateLocalPlayer(presentingVC: self)
         
         let scene = GameBeginScene(size: view.bounds.size)
         scene.scaleMode = .resizeFill
@@ -28,6 +31,8 @@ class ViewController: UIViewController {
     override var prefersStatusBarHidden: Bool {
         return true
     }
+    
+    
 
 
 }

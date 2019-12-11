@@ -69,7 +69,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     let timeLabel = SKLabelNode(fontNamed: "Chalkduster")   // Timer
     lazy var displayLink = CADisplayLink(target: self, selector: #selector(timeUpdateHandler))   // DisplayLink for updating Timer
     var startDate: Date!
-    var gameTime: TimeInterval!
+    var score: TimeInterval!
 
 
 
@@ -617,7 +617,7 @@ extension GameScene: SKPhysicsContactDelegate{
                 
                 self.petCollideWithWall(contact.collisionImpulse)
                 
-                //Set latency in collision, otherwise we will have multiple collision for one single hitting with the wall
+                //Set latency in collision, otherwise we will have multiple collision for a single hit with the wall !!!
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
                     self.notHittingTheWall = true
                 })
@@ -657,7 +657,15 @@ extension GameScene: SKPhysicsContactDelegate{
     func petReachFinishLine(){
         
         // record the score for this round of game
-        gameTime = Date().timeIntervalSince(startDate)
+        score = Date().timeIntervalSince(startDate)
+        
+        // upload score to the game center
+        DispatchQueue.global(qos: .background).async {
+            // TODO: add leaderboardID to the map struct
+            GameCenter.shared.updateScore(with: score, to: map.leaderboardID)
+            GameCenter.shared.loadScore(with )
+        }
+        
         let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
         let gameOverScene = GameOverScene(size: self.size, won: true)
         self.cleanup()

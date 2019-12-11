@@ -12,6 +12,7 @@
 		366300162379E07300028310 /* extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366300152379E07300028310 /* extension.swift */; };
 		3663001C237A1D9000028310 /* AnalogJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3663001B237A1D8F00028310 /* AnalogJoystick.swift */; };
 		3663001E237A904C00028310 /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3663001D237A904C00028310 /* GameOverScene.swift */; };
+		36E522E023A171B400CCC8D2 /* GameCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E522DF23A171B400CCC8D2 /* GameCenter.swift */; };
 		36ECAEF42386F88400E1B4E5 /* RingBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36ECAEF32386F88400E1B4E5 /* RingBuffer.swift */; };
 		36ECAEF72388283100E1B4E5 /* RandomForest.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 36ECAEF62388283100E1B4E5 /* RandomForest.mlmodel */; };
 		36ED7EB42374F7730078BA7D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36ED7EB32374F7730078BA7D /* AppDelegate.swift */; };
@@ -30,6 +31,7 @@
 		366300152379E07300028310 /* extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extension.swift; sourceTree = "<group>"; };
 		3663001B237A1D8F00028310 /* AnalogJoystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalogJoystick.swift; sourceTree = "<group>"; };
 		3663001D237A904C00028310 /* GameOverScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
+		36E522DF23A171B400CCC8D2 /* GameCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenter.swift; sourceTree = "<group>"; };
 		36ECAEF32386F88400E1B4E5 /* RingBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingBuffer.swift; sourceTree = "<group>"; };
 		36ECAEF62388283100E1B4E5 /* RandomForest.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = RandomForest.mlmodel; sourceTree = "<group>"; };
 		36ED7EB02374F7720078BA7D /* PIM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PIM.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,8 +74,16 @@
 				36622657237B492B00369028 /* FTButtonNode.swift */,
 				36EFC1A32377D470003192D9 /* OperationOverload.swift */,
 				36ECAEF32386F88400E1B4E5 /* RingBuffer.swift */,
+				36E522DF23A171B400CCC8D2 /* GameCenter.swift */,
 			);
 			path = Helper;
+			sourceTree = "<group>";
+		};
+		36B3B87F23962B8D00174058 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		36ECAEF5238827AE00E1B4E5 /* model */ = {
@@ -89,6 +99,7 @@
 			children = (
 				36ED7EB22374F7720078BA7D /* PIM */,
 				36ED7EB12374F7720078BA7D /* Products */,
+				36B3B87F23962B8D00174058 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -150,6 +161,11 @@
 				TargetAttributes = {
 					36ED7EAF2374F7720078BA7D = {
 						CreatedOnToolsVersion = 10.3;
+						SystemCapabilities = {
+							com.apple.GameCenter.iOS = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
@@ -191,6 +207,7 @@
 			files = (
 				36EFC1A42377D470003192D9 /* OperationOverload.swift in Sources */,
 				36EFC1A0237613BF003192D9 /* GameScene.swift in Sources */,
+				36E522E023A171B400CCC8D2 /* GameCenter.swift in Sources */,
 				3663001E237A904C00028310 /* GameOverScene.swift in Sources */,
 				36622658237B492B00369028 /* FTButtonNode.swift in Sources */,
 				36ECAEF42386F88400E1B4E5 /* RingBuffer.swift in Sources */,
@@ -353,7 +370,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = yankuang608.personal.PIM;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yankuang608.personal.PIM;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -371,7 +388,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = yankuang608.personal.PIM;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yankuang608.personal.PIM;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
