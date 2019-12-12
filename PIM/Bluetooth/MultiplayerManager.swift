@@ -58,10 +58,8 @@ class MultiplayerManager: NSObject {
         if self.isHost {
             myScore = score
             scoreDict[UIDevice.current.name] = myScore
-            if shouldSendScore() {
                 ConnectionManager.sharedManager.send(scoreDict)
                 delegate?.scoresDidChange?(scoresDict: scoreDict)
-            }
         } else {
             ConnectionManager.sharedManager.send(["name": UIDevice.current.name, "score": score])
         }

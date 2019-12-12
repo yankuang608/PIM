@@ -65,6 +65,7 @@ class GameBeginScene: SKScene {
                 let scene = GameScene(size: self.size)
                 scene.buddy = sender.name!   //That's how I pass chosen animal to GameScene
                 self.view?.presentScene(scene, transition:reveal)
+
             }
         ]))
         

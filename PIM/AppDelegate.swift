@@ -21,4 +21,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
     }
     
+    func selectGameType() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: "game_type_screen")
+        window?.rootViewController = viewController
+        window?.makeKeyAndVisible()
+    }
+
+    
 }

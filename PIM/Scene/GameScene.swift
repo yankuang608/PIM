@@ -22,7 +22,7 @@ let testMapBit =  [[1,1,1,1,1,1,1,1,1,1,1,1,1],
 class GameScene: SKScene, SFSpeechRecognizerDelegate{
     // the buddy is set in GameBeginScene
     lazy var buddy = String()
-    
+
     //MARK: testMap
     let testMap = Map(testMapBit, brickImage: "brickTexture", backgroundImage: "Background", from: [1,1], to: [11,1])
     

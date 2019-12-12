@@ -34,6 +34,10 @@ class GameTypeSelectionViewController: UIViewController {
         appDelegate.startGame()
     }
     
+    func selectGameType() {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.startGame()
+    }
 }
 
 extension GameTypeSelectionViewController: MultiplayerManagerDelegate {
