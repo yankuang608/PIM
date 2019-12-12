@@ -23,6 +23,8 @@ class GameCenter {
     
     private(set) var isGameCenterEnabled: Bool = false
     
+    private let contextPetMap = [ "hedgehog", "hamster", "turtle", "dog", "rabbit"]
+    
     // try to authenticate local player (takes presenting VC for presenting Game Center VC if it's necessary)
     func authenticateLocalPlayer(presentingVC: UIViewController) {
         // authentification method
@@ -46,41 +48,61 @@ class GameCenter {
     
     // method for loading scores from leaderboard
     
-    func loadScores(finished: @escaping ([(playerName: String, score: Int)]?)->()) {
-        // fetch leaderboard from Game Center
-        fetchLeaderboard { [weak self] in
-            if let localLeaderboard = self?.leaderboard {
-                // set player scope as .global (it's set by default) for loading all players results
-                localLeaderboard.playerScope = .global
-                // load scores and then call method in closure
-                localLeaderboard.loadScores { [weak self] (scores, error) in
-                    // check for errors
-                    if error != nil {
-                        print(error!)
-                    } else if scores != nil {
-                        // assemble leaderboard info
-                        var leaderBoardInfo: [(playerName: String, score: Int)] = []
-                        for score in scores! {
-                            let name = score.player.alias
-                            let userScore = Int(score.value)
-                            leaderBoardInfo.append((playerName: name, score: userScore))
-                        }
-                        self?.scores = leaderBoardInfo
-                        // call finished method
-                        finished(self?.scores)
+    var name      = String()
+    var userScore = String()
+    var pet       = String()
+    
+    func loadScores(from leaderboardID: String) -> ([(playerName: String, score: Int, chosenPet: String)]) {
+        
+        // fetch leaderboard for current map from Game Center
+        fetchLeaderboard(leaderboardID)
+        
+        // load leaderboard from game center
+        if let localLeaderboard = self?.leaderboard {
+            // set player scope as .global (it's set by default) for loading all players results
+            localLeaderboard.playerScope = .global
+            // load scores and then call method in closure
+            localLeaderboard.loadScores { [weak self] (scores, error) in
+                // check for errors
+                if error != nil {
+                    print(error!)
+                } else if scores != nil {
+                    // assemble leaderboard info
+                    var leaderBoardInfo: [(playerName: String, score: Int, chosenPet: String)] = []
+                    for score in scores! {
+                        
+                        // name of player
+                        name = score.player.alias
+                        
+                        // score
+                        userScore = TimeInterval(score.value).stringformat
+                        
+                        // achieving this score with which pet
+                        pet = contextPetMap[score.context]
+                        
+                        leaderBoardInfo.append((playerName: name, score: userScore, ChosenPet: pet))
                     }
+                    return leaderBoardInfo
                 }
             }
         }
+
     }
     
+    
     // update local player score
-    // we want to update the TimeInterval as score, and the leaderboardID
-    func updateScore(with value: TimeInterval, to leaderboardID: String) {
+    // update the leaderboard with score and pet
+    
+    func updateScore( _ value: TimeInterval, with pet: String, to leaderboardID: String) {
         // take score
         let score = GKScore(leaderboardIdentifier: leaderboardID)
+        
         // set value for score
-        score.value = Int64(value)
+        score.value = UInt64(value)
+        
+        // set the context for score
+        score.context = contextPetMap.firstIndex(of: pet)
+            
         // push score to Game Center
         GKScore.report([score]) { (error) in
             // check for errors
@@ -94,17 +116,13 @@ class GameCenter {
     
     private var localPlayer = GKLocalPlayer.local
     
-    // leaderboard ID from iTunes Connect
-    
-//    private let leaderboardID = "com.example.top"
-    
     private var scores: [(playerName: String, score: Int)]?
  
     private var leaderboard: GKLeaderboard?
     
     // fetching leaderboard method
     
-    private func fetchLeaderboard( from leaderboardID: String, finished: @escaping () -> ()) {
+    private func fetchLeaderboard( _ leaderboardID: String) {
         // check if local player authentificated or not
         if localPlayer.isAuthenticated {
             // load leaderboard from Game Center
@@ -119,7 +137,6 @@ class GameCenter {
                             // find leaderboard with given ID (if there are multiple leaderboards)
                             if leaderboard.identifier == leaderboardID {
                                 self?.leaderboard = leaderboard
-                                finished()
                             }
                         }
                     }

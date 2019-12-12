@@ -24,7 +24,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     lazy var buddy = String()
     
     //MARK: testMap
-    let testMap = Map(testMapBit, brickImage: "brickTexture", backgroundImage: "Background", from: [1,1], to: [11,1])
+    let testMap = Map(testMapBit, brickImage: "brickTexture", backgroundImage: "Background", from: [1,1], to: [11,1], id: "PIM.leaderboard.map1")
     
     
     //MARK: Parameters
@@ -662,8 +662,9 @@ extension GameScene: SKPhysicsContactDelegate{
         // upload score to the game center
         DispatchQueue.global(qos: .background).async {
             // TODO: add leaderboardID to the map struct
-            GameCenter.shared.updateScore(with: score, to: map.leaderboardID)
-            GameCenter.shared.loadScore(with )
+            GameCenter.shared.updateScore(self.score, with: self.buddy, to: self.testMap.leaderBoardID)
+            let leaderBoardInfo = GameCenter.shared.loadScores(from: self.testMap.leaderBoardID)
+            // TODO: popover a window showing the result
         }
         
         let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
