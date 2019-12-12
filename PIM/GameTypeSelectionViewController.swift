@@ -20,7 +20,6 @@ class GameTypeSelectionViewController: UIViewController {
            
            startGame()
     }
-    
 
     @IBAction func multiplayerGameButtonTapped(_ sender: Any) {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -29,8 +28,6 @@ class GameTypeSelectionViewController: UIViewController {
            MultiplayerManager.sharedManager.initializeMultiplayerSession(delegate: self)
            MultiplayerManager.sharedManager.showSessionSelector(onViewController: self)
     }
-    
-
     
     func startGame() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate

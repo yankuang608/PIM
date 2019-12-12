@@ -11,7 +11,7 @@
         <!--Game Type Selection View Controller-->
         <scene sceneID="Qhz-SM-tMW">
             <objects>
-                <viewController storyboardIdentifier="game_screen" id="Aa8-MH-wSz" customClass="GameTypeSelectionViewController" customModule="PIM" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Aa8-MH-wSz" customClass="GameTypeSelectionViewController" customModule="PIM" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="qjC-GV-fOH">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -44,7 +44,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="PIM" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="game_screen" id="BYZ-38-t0r" customClass="ViewController" customModule="PIM" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC" customClass="SKView">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

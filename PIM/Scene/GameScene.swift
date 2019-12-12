@@ -709,9 +709,8 @@ extension GameScene: MultiplayerManagerDelegate {
         }
         
         let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
-        
         let gameOverScene = GameOverScene(size: self.size, won: false, winner: winner)
-        
+        // TODO: stop thoes
         self.cleanup()
         view?.presentScene(gameOverScene, transition: reveal)
         
