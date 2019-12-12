@@ -75,10 +75,17 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
 
     //MARK: Scene Life Cycle
     override func willMove(from view: SKView) {
-        
+        physicsWorld.gravity = .zero
+
     }
     
+    var startTime: Date? = nil
+    var endTime: Date? = nil
+    
     override func didMove(to view: SKView) {
+        startTime = Date()
+        MultiplayerManager.sharedManager.delegate = self
+        
         physicsWorld.contactDelegate = self
         
         speechRecognizer.delegate = self
@@ -643,8 +650,12 @@ extension GameScene: SKPhysicsContactDelegate{
         
             // stay 0.2 second after game over
             if self.currentHit == 0{
+                //                calculateTime(nil)
+
+                MultiplayerManager.sharedManager.delegate = nil
+
                 let reveal = SKTransition.flipHorizontal(withDuration: 0.3)
-                let gameOverScene = GameOverScene(size: self.size, won: false)
+                let gameOverScene = GameOverScene(size: self.size, won: false, winner: "")
                 self.cleanup()
                 self.view?.presentScene(gameOverScene, transition: reveal)
                 
@@ -655,13 +666,27 @@ extension GameScene: SKPhysicsContactDelegate{
     }
     
     func petReachFinishLine(){
+        MultiplayerManager.sharedManager.sendMyScore(0)
+        
+        MultiplayerManager.sharedManager.delegate = nil
         
         // record the score for this round of game
         gameTime = Date().timeIntervalSince(startDate)
         let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
-        let gameOverScene = GameOverScene(size: self.size, won: true)
+        
+        let gameOverScene = GameOverScene(size: self.size, won: true, winner: "")
+
         self.cleanup()
         self.view?.presentScene(gameOverScene, transition: reveal)
+    }
+    
+    
+    func calculateTime(_ endTime: Date?) {
+        var score = 0
+        if endTime != nil && startTime != nil {
+            score = Int((endTime?.timeIntervalSince(startTime!))!)
+        }
+        MultiplayerManager.sharedManager.sendMyScore(score)
     }
     
     
@@ -670,6 +695,27 @@ extension GameScene: SKPhysicsContactDelegate{
         self.motion.stopDeviceMotionUpdates()
         audioEngineForSpeechRecognition.stop()
         recognitionRequest?.endAudio()
+    }
+}
+
+
+extension GameScene: MultiplayerManagerDelegate {
+    func scoresDidChange(scoresDict: Dictionary<String, Int>) {
+        
+        var winner = ""
+        for key in scoresDict.keys {
+            winner = key
+            break
+        }
+        
+        let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+        
+        let gameOverScene = GameOverScene(size: self.size, won: false, winner: winner)
+        
+        self.cleanup()
+        view?.presentScene(gameOverScene, transition: reveal)
+        
+        
     }
 }
 

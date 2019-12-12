@@ -9,7 +9,7 @@
 import SpriteKit
 
 class GameOverScene: SKScene {
-    init(size: CGSize, won:Bool) {
+    init(size: CGSize, won:Bool, winner: String) {
         super.init(size: size)
         
         // 1

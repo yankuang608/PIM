@@ -11,7 +11,7 @@
         <!--Game Type Selection View Controller-->
         <scene sceneID="Qhz-SM-tMW">
             <objects>
-                <viewController id="Aa8-MH-wSz" customClass="GameTypeSelectionViewController" customModule="PIM" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="game_screen" id="Aa8-MH-wSz" customClass="GameTypeSelectionViewController" customModule="PIM" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="qjC-GV-fOH">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -21,7 +21,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Multi-Player"/>
                                 <connections>
-                                    <action selector="multiplayerGameButtonTapped:" destination="Aa8-MH-wSz" eventType="touchUpInside" id="F84-E3-HRi"/>
+                                    <action selector="multiplayerGameButtonTapped:" destination="Aa8-MH-wSz" eventType="touchUpInside" id="YU9-rZ-N1f"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ru0-eR-WOj">
@@ -39,7 +39,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wlV-LQ-yCZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1125" y="94"/>
+            <point key="canvasLocation" x="-1126.0869565217392" y="93.75"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
