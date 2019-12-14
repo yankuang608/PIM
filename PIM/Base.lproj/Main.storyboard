@@ -41,6 +41,21 @@
             </objects>
             <point key="canvasLocation" x="-1126.0869565217392" y="93.75"/>
         </scene>
+        <!--Map View Controller-->
+        <scene sceneID="6Xx-mA-1A7">
+            <objects>
+                <viewController id="nhS-VZ-NX8" customClass="MapViewController" customModule="PIM" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Dzx-Aa-haO">
+                        <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="VaR-GL-Uip"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Lvc-b6-UcB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-456" y="93"/>
+        </scene>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
@@ -54,7 +69,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-311" y="93"/>
+            <point key="canvasLocation" x="222" y="93"/>
         </scene>
     </scenes>
 </document>

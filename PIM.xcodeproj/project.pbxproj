@@ -25,6 +25,7 @@
 		BD622F1223A178830047BBC2 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD622F1123A178830047BBC2 /* ConnectionManager.swift */; };
 		BD622F1423A178BD0047BBC2 /* MultiplayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD622F1323A178BD0047BBC2 /* MultiplayerManager.swift */; };
 		BD622F1623A178F00047BBC2 /* GameTypeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD622F1523A178F00047BBC2 /* GameTypeSelectionViewController.swift */; };
+		BDBF39B423A4676B008390CA /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBF39B323A4676B008390CA /* MapViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		BD622F1123A178830047BBC2 /* ConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
 		BD622F1323A178BD0047BBC2 /* MultiplayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerManager.swift; sourceTree = "<group>"; };
 		BD622F1523A178F00047BBC2 /* GameTypeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTypeSelectionViewController.swift; sourceTree = "<group>"; };
+		BDBF39B323A4676B008390CA /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +124,7 @@
 				36ED7EBC2374F7740078BA7D /* LaunchScreen.storyboard */,
 				36ED7EBF2374F7740078BA7D /* Info.plist */,
 				BD622F1523A178F00047BBC2 /* GameTypeSelectionViewController.swift */,
+				BDBF39B323A4676B008390CA /* MapViewController.swift */,
 			);
 			path = PIM;
 			sourceTree = "<group>";
@@ -221,6 +224,7 @@
 				BD622F1223A178830047BBC2 /* ConnectionManager.swift in Sources */,
 				36EFC1A223762CBE003192D9 /* Map.swift in Sources */,
 				36ED7EB42374F7730078BA7D /* AppDelegate.swift in Sources */,
+				BDBF39B423A4676B008390CA /* MapViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
