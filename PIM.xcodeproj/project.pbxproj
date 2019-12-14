@@ -25,6 +25,7 @@
 		BD622F1223A178830047BBC2 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD622F1123A178830047BBC2 /* ConnectionManager.swift */; };
 		BD622F1423A178BD0047BBC2 /* MultiplayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD622F1323A178BD0047BBC2 /* MultiplayerManager.swift */; };
 		BD622F1623A178F00047BBC2 /* GameTypeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD622F1523A178F00047BBC2 /* GameTypeSelectionViewController.swift */; };
+		BD9EB55C23A4B34F000900D5 /* GameCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9EB55B23A4B34F000900D5 /* GameCenter.swift */; };
 		BDBF39B423A4676B008390CA /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBF39B323A4676B008390CA /* MapViewController.swift */; };
 		BDBF39B823A483FE008390CA /* CharcterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBF39B723A483FE008390CA /* CharcterViewController.swift */; };
 /* End PBXBuildFile section */
@@ -50,6 +51,7 @@
 		BD622F1123A178830047BBC2 /* ConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
 		BD622F1323A178BD0047BBC2 /* MultiplayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerManager.swift; sourceTree = "<group>"; };
 		BD622F1523A178F00047BBC2 /* GameTypeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTypeSelectionViewController.swift; sourceTree = "<group>"; };
+		BD9EB55B23A4B34F000900D5 /* GameCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenter.swift; sourceTree = "<group>"; };
 		BDBF39B323A4676B008390CA /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		BDBF39B723A483FE008390CA /* CharcterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharcterViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -82,6 +84,7 @@
 				36622657237B492B00369028 /* FTButtonNode.swift */,
 				36EFC1A32377D470003192D9 /* OperationOverload.swift */,
 				36ECAEF32386F88400E1B4E5 /* RingBuffer.swift */,
+				BD9EB55B23A4B34F000900D5 /* GameCenter.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -226,6 +229,7 @@
 				36ECAEF72388283100E1B4E5 /* RandomForest.mlmodel in Sources */,
 				36622654237B207200369028 /* GameBeginScene.swift in Sources */,
 				BD622F1223A178830047BBC2 /* ConnectionManager.swift in Sources */,
+				BD9EB55C23A4B34F000900D5 /* GameCenter.swift in Sources */,
 				36EFC1A223762CBE003192D9 /* Map.swift in Sources */,
 				36ED7EB42374F7730078BA7D /* AppDelegate.swift in Sources */,
 				BDBF39B423A4676B008390CA /* MapViewController.swift in Sources */,

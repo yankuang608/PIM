@@ -17,6 +17,8 @@ class GameBeginScene: SKScene {
         
         let label = SKLabelNode(fontNamed: "BradleyHandITCTT-Bold")
         label.text = "Hey, time to Choose your buddy!"
+        label.text = "is the character you will be playing with"
+
         label.fontSize = 30
         label.fontColor = SKColor.black
         label.position = CGPoint(x: size.width * 0.5, y: size.height * 0.85)
@@ -77,11 +79,7 @@ class GameBeginScene: SKScene {
             }
         ]))
         
-        
     }
-    
-    
-    
     
 }
 
