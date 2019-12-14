@@ -48,11 +48,18 @@ class GameBeginScene: SKScene {
         }
     }
     
+    
     @objc func transferToGameScene(_ sender: FTButtonNode){
         self.chosenAnimal = sender.name
+        
+        
+       // MultiplayerManager.sharedManager.
+        
         // If one button is selected, hidden other buttons
         let restAnimal = petButtons.filter{ $0.name != sender.name}
+
         for animal in restAnimal{
+            
             animal.isEnabled = true
             animal.isHidden = true
         }
@@ -64,6 +71,7 @@ class GameBeginScene: SKScene {
                 let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
                 let scene = GameScene(size: self.size)
                 scene.buddy = sender.name!   //That's how I pass chosen animal to GameScene
+                
                 self.view?.presentScene(scene, transition:reveal)
 
             }
@@ -76,3 +84,16 @@ class GameBeginScene: SKScene {
     
     
 }
+
+/*
+ Turtle- Control with a joystick
+
+ Dog- Hold the mic down and say “move up” to move the character up then release (“move down” for down, “move left” for left, “move right” for right) for each move you will need to hold and release the mic.
+
+ Rabbit- controlled with a magnate move the magnate around the phone and the rabbit will follow the direct
+
+ Hedge hock- Move the screen up, down, left, right for the direct you desire
+
+ Hamster- tap a hard surface on any direction of the phone and the hamster will run in the opposite direction
+
+ */

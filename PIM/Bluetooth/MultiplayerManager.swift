@@ -22,6 +22,8 @@ class MultiplayerManager: NSObject {
     public var myScore = -1
     public var scoreDict = Dictionary<String, Int>()
     
+    //alert to join or host session
+    
     func showSessionSelector(onViewController: UIViewController) {
         let alert = UIAlertController(title: "Multipler session",
                                       message: "Do you want to host a session or join one?",

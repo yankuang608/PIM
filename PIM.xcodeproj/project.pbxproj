@@ -26,6 +26,7 @@
 		BD622F1423A178BD0047BBC2 /* MultiplayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD622F1323A178BD0047BBC2 /* MultiplayerManager.swift */; };
 		BD622F1623A178F00047BBC2 /* GameTypeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD622F1523A178F00047BBC2 /* GameTypeSelectionViewController.swift */; };
 		BDBF39B423A4676B008390CA /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBF39B323A4676B008390CA /* MapViewController.swift */; };
+		BDBF39B823A483FE008390CA /* CharcterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBF39B723A483FE008390CA /* CharcterViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		BD622F1323A178BD0047BBC2 /* MultiplayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerManager.swift; sourceTree = "<group>"; };
 		BD622F1523A178F00047BBC2 /* GameTypeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTypeSelectionViewController.swift; sourceTree = "<group>"; };
 		BDBF39B323A4676B008390CA /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		BDBF39B723A483FE008390CA /* CharcterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharcterViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +122,7 @@
 				36EFC1A123762CBE003192D9 /* Map.swift */,
 				366300152379E07300028310 /* extension.swift */,
 				36ED7EB72374F7730078BA7D /* Main.storyboard */,
+				BDBF39B723A483FE008390CA /* CharcterViewController.swift */,
 				36ED7EBA2374F7740078BA7D /* Assets.xcassets */,
 				36ED7EBC2374F7740078BA7D /* LaunchScreen.storyboard */,
 				36ED7EBF2374F7740078BA7D /* Info.plist */,
@@ -212,6 +215,7 @@
 				36EFC1A42377D470003192D9 /* OperationOverload.swift in Sources */,
 				36EFC1A0237613BF003192D9 /* GameScene.swift in Sources */,
 				BD622F1423A178BD0047BBC2 /* MultiplayerManager.swift in Sources */,
+				BDBF39B823A483FE008390CA /* CharcterViewController.swift in Sources */,
 				3663001E237A904C00028310 /* GameOverScene.swift in Sources */,
 				36622658237B492B00369028 /* FTButtonNode.swift in Sources */,
 				36ECAEF42386F88400E1B4E5 /* RingBuffer.swift in Sources */,
