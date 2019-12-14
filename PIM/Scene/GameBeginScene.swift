@@ -25,11 +25,11 @@ class GameBeginScene: SKScene {
 
     }
     lazy public var chosenAnimal: String? = nil
-    let pets = ["dog","turtle","hedgehog","hamster"].shuffled()
+    let pets = ["dog","turtle","hedgehog","hamster","rabbit"].shuffled()
     lazy var petButtons: [FTButtonNode] = []
     
     func addPetButton(){
-        let buttonSize = CGSize(width: size.width * 0.25, height: size.height * 0.6)
+        let buttonSize = CGSize(width: size.width * 0.2, height: size.height * 0.6)
         
         for index in pets.indices{
             let texture = SKTexture(imageNamed: pets[index])

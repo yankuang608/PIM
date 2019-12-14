@@ -20,7 +20,7 @@ let testMapBit =  [[1,1,1,1,1,1,1,1,1,1,1,1,1],
                    [1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
 class GameScene: SKScene, SFSpeechRecognizerDelegate{
-    // the buddy is set in GameBeginScene
+    // the buddy is chosen in GameBeginScene
     lazy var buddy = String()
     
     //MARK: testMap
@@ -61,7 +61,8 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     lazy var isWaitingForMotionData: Bool = true
     
-    let ModelRF = RandomForest()    // loading randomforest model
+    let RFMotion = RandomForest()           // Model for hamster
+    let RFMagnets = RandomForestMagnets()  // Model for rabbit
     
     var counter: Int = 3            // counting down at the beginning of game
     let countDownLabel = SKLabelNode(fontNamed: "Chalkduster")
@@ -95,6 +96,8 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
             addDog()
         case "hamster":
             addHamster()
+        case "rabbit":
+            addRabbit()
         default:
             fatalError("Unknown pet")
         }
@@ -275,21 +278,38 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     }
     
     
-    //MARK: add Hedgehog
+    // Motion updatas for Hedgehog and hamster
     func startMotionUpdate(withHandler handler: @escaping CMDeviceMotionHandler){
     
         if self.motion.isAccelerometerAvailable{
             
-            self.motion.accelerometerUpdateInterval = 0.01
+            self.motion.accelerometerUpdateInterval = 0.02
+            
             self.motion.startDeviceMotionUpdates(to: motionOperationQueue, withHandler: handler)
             
         }
     }
     
+    
+    // Magneto updates for rabbit
+    func startMagnetoUpdate(withHandler handler: @escaping CMDeviceMotionHandler){
+        if motion.isMagnetometerAvailable{
+            
+            motion.deviceMotionUpdateInterval = 0.5
+            
+            // using:CMAttitudeReferenceFrame... otherwise no result.
+            motion.startDeviceMotionUpdates(using: CMAttitudeReferenceFrame.xArbitraryCorrectedZVertical, to: motionOperationQueue, withHandler: handler)
+
+        }
+    }
+    
+    
+    //MARK: add hedgehog
     func hedgeHogMotionHandler(_ motionData: CMDeviceMotion?, error: Error?){
         guard let gravity = motionData?.gravity else { return }
         self.physicsWorld.gravity = CGVector(dx: gravity.y * 9.8, dy: -(gravity.x * 9.8)) //using landscape pay attention with the xyz direction
     }
+    
     
     func addHedgehog(){
         
@@ -533,9 +553,9 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         {
             self.isWaitingForMotionData = false
             //predict a label
-            let seq = toMLMultiArray(self.ringBuffer.getDataAsVector())
-            guard let outputRF = try? ModelRF.prediction(input: seq) else {
-                fatalError("Model prediction error.")
+            let seq = toMLMultiArray(self.ringBuffer.getDataAsVector(), featureNum: 150)
+            guard let outputRF = try? RFMotion.prediction(input: seq) else {
+                fatalError("Error with RFMotion prediction error.")
             }
             
             moveHamster(outputRF.classLabel)
@@ -549,8 +569,6 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     func moveHamster(_ response:String){
         
         // The difference of direction is because of the training model process
-        
-        // TODO: pat -> Slam
         
         switch response {
         case "tapUp":
@@ -575,10 +593,51 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     }
     
     
+    //MARK: add Rabbit
+    func addRabbit(){
+        let rabbitTexture = SKTexture(imageNamed: "rabbit")
+        
+        self.pet = SKSpriteNode(texture: rabbitTexture)
+        self.pet.scale(to: petSize)
+        self.pet.position = startPoint
+        self.pet.zPosition = 1
+        self.pet.physicsBody = SKPhysicsBody(texture: rabbitTexture, size: petSize)
+        self.pet.physicsBody?.categoryBitMask = PhysicsCategory.pet
+        self.pet.physicsBody?.collisionBitMask = PhysicsCategory.wall
+        self.pet.physicsBody?.contactTestBitMask = PhysicsCategory.wall
+        self.pet.physicsBody?.mass = 1
+        self.pet.physicsBody?.usesPreciseCollisionDetection = true
+        self.pet.physicsBody?.allowsRotation = false
+        self.pet.physicsBody?.affectedByGravity = false
+        self.pet.physicsBody?.pinned = true
+        
+        addChild(self.pet)
+        
+        startMagnetoUpdate(withHandler: rabbitMotionHandler)
+    }
+    
+    
+    func rabbitMotionHandler(_ motionData:CMDeviceMotion?, error:Error?){
+        if let magneto = motionData?.magneticField{
+            
+            let fieldData = [magneto.field.x, magneto.field.y, magneto.field.z]
+            
+            let seq = toMLMultiArray(fieldData, featureNum: 3)
+            
+            guard let outputRF = try? RFMagnets.prediction(input: seq) else {
+                fatalError("Error with RFMagnets prediction")
+            }
+            
+            // func applyImpulse(to direction: String, by impulse: CGFloat)
+            self.pet.applyImpulse(to: outputRF.classLabel, by: petImpulse.rabbit)
+        }
+    }
+    
+    
     // convert to ML Multi array
     // https://github.com/akimach/GestureAI-CoreML-iOS/blob/master/GestureAI/GestureViewController.swift
-    private func toMLMultiArray(_ arr: [Double]) -> MLMultiArray {
-        guard let sequence = try? MLMultiArray(shape:[150], dataType:MLMultiArrayDataType.double) else {
+    private func toMLMultiArray(_ arr: [Double], featureNum: NSNumber) -> MLMultiArray {
+        guard let sequence = try? MLMultiArray(shape: [featureNum], dataType:MLMultiArrayDataType.double) else {
             fatalError("Unexpected runtime error. MLMultiArray could not be created")
         }
         let size = Int(truncating: sequence.shape[0])
@@ -660,11 +719,16 @@ extension GameScene: SKPhysicsContactDelegate{
         score = Date().timeIntervalSince(startDate)
         
         // upload score to the game center
-        DispatchQueue.global(qos: .background).async {
-            // TODO: add leaderboardID to the map struct
-            GameCenter.shared.updateScore(self.score, with: self.buddy, to: self.testMap.leaderBoardID)
-            let leaderBoardInfo = GameCenter.shared.loadScores(from: self.testMap.leaderBoardID)
-            // TODO: popover a window showing the result
+        
+        // TODO: popover a window showing the result
+        GameCenter.shared.updateScore(self.score, with: self.buddy, to: self.testMap.leaderBoardID)
+        let leaderBoardInfo =  GameCenter.shared.loadScores(from: self.testMap.leaderBoardID)
+        if leaderBoardInfo != nil{
+            for info in leaderBoardInfo!{
+                print(info)
+            }
+        } else{
+            print("Haha")
         }
         
         let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
@@ -681,7 +745,6 @@ extension GameScene: SKPhysicsContactDelegate{
         recognitionRequest?.endAudio()
     }
 }
-
 
 
 

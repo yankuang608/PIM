@@ -13,6 +13,7 @@
 		3663001C237A1D9000028310 /* AnalogJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3663001B237A1D8F00028310 /* AnalogJoystick.swift */; };
 		3663001E237A904C00028310 /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3663001D237A904C00028310 /* GameOverScene.swift */; };
 		36E522E023A171B400CCC8D2 /* GameCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E522DF23A171B400CCC8D2 /* GameCenter.swift */; };
+		36E5AF6C23A5550000E12EC7 /* RandomForestMagnets.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 36E5AF6B23A5550000E12EC7 /* RandomForestMagnets.mlmodel */; };
 		36ECAEF42386F88400E1B4E5 /* RingBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36ECAEF32386F88400E1B4E5 /* RingBuffer.swift */; };
 		36ECAEF72388283100E1B4E5 /* RandomForest.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 36ECAEF62388283100E1B4E5 /* RandomForest.mlmodel */; };
 		36ED7EB42374F7730078BA7D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36ED7EB32374F7730078BA7D /* AppDelegate.swift */; };
@@ -32,6 +33,7 @@
 		3663001B237A1D8F00028310 /* AnalogJoystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalogJoystick.swift; sourceTree = "<group>"; };
 		3663001D237A904C00028310 /* GameOverScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
 		36E522DF23A171B400CCC8D2 /* GameCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenter.swift; sourceTree = "<group>"; };
+		36E5AF6B23A5550000E12EC7 /* RandomForestMagnets.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = RandomForestMagnets.mlmodel; sourceTree = "<group>"; };
 		36ECAEF32386F88400E1B4E5 /* RingBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingBuffer.swift; sourceTree = "<group>"; };
 		36ECAEF62388283100E1B4E5 /* RandomForest.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = RandomForest.mlmodel; sourceTree = "<group>"; };
 		36ED7EB02374F7720078BA7D /* PIM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PIM.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -90,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				36ECAEF62388283100E1B4E5 /* RandomForest.mlmodel */,
+				36E5AF6B23A5550000E12EC7 /* RandomForestMagnets.mlmodel */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -213,6 +216,7 @@
 				36ECAEF42386F88400E1B4E5 /* RingBuffer.swift in Sources */,
 				36ED7EB62374F7730078BA7D /* ViewController.swift in Sources */,
 				366300162379E07300028310 /* extension.swift in Sources */,
+				36E5AF6C23A5550000E12EC7 /* RandomForestMagnets.mlmodel in Sources */,
 				3663001C237A1D9000028310 /* AnalogJoystick.swift in Sources */,
 				36ECAEF72388283100E1B4E5 /* RandomForest.mlmodel in Sources */,
 				36622654237B207200369028 /* GameBeginScene.swift in Sources */,

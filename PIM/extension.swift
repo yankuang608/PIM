@@ -32,6 +32,7 @@ struct petImpulse {
     static let dog         : CGFloat = 20
     static let hamster     : CGFloat = 20
     static let hamsterRun  : CGFloat = 40
+    static let rabbit      : CGFloat = 40
 }
 //extend move "up","left","down","right" method to SKSpriteNode
 //the path length is fixed and using duration to control the speed

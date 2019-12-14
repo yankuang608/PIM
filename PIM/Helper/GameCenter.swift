@@ -46,47 +46,47 @@ class GameCenter {
         }
     }
     
+    
     // method for loading scores from leaderboard
     
-    var name      = String()
-    var userScore = String()
-    var pet       = String()
-    
-    func loadScores(from leaderboardID: String) -> ([(playerName: String, score: Int, chosenPet: String)]) {
+    func loadScores(from leaderboardID: String) -> ([(playerName: String, score: String, chosenPet: String)])? {
         
         // fetch leaderboard for current map from Game Center
         fetchLeaderboard(leaderboardID)
         
+        // create an array for storing the leaderBoard information
+        var leaderBoardInfo: [(playerName: String, score: String, chosenPet: String)]?
+        
         // load leaderboard from game center
-        if let localLeaderboard = self?.leaderboard {
+        if let localLeaderboard = self.leaderboard {
+            
             // set player scope as .global (it's set by default) for loading all players results
             localLeaderboard.playerScope = .global
+            
             // load scores and then call method in closure
-            localLeaderboard.loadScores { [weak self] (scores, error) in
+            localLeaderboard.loadScores {(scores, error) in
                 // check for errors
                 if error != nil {
                     print(error!)
                 } else if scores != nil {
                     // assemble leaderboard info
-                    var leaderBoardInfo: [(playerName: String, score: Int, chosenPet: String)] = []
                     for score in scores! {
                         
                         // name of player
-                        name = score.player.alias
+                        let name = score.player.alias
                         
                         // score
-                        userScore = TimeInterval(score.value).stringformat
+                        let userScore = TimeInterval(score.value).stringFormat
                         
                         // achieving this score with which pet
-                        pet = contextPetMap[score.context]
+                        let pet = self.contextPetMap[Int(score.context)]
                         
-                        leaderBoardInfo.append((playerName: name, score: userScore, ChosenPet: pet))
+                        leaderBoardInfo?.append((playerName: name, score: userScore, chosenPet: pet))
                     }
-                    return leaderBoardInfo
                 }
             }
         }
-
+        return leaderBoardInfo
     }
     
     
@@ -98,10 +98,10 @@ class GameCenter {
         let score = GKScore(leaderboardIdentifier: leaderboardID)
         
         // set value for score
-        score.value = UInt64(value)
+        score.value = Int64(value)
         
         // set the context for score
-        score.context = contextPetMap.firstIndex(of: pet)
+        score.context = UInt64(contextPetMap.firstIndex(of: pet)!)
             
         // push score to Game Center
         GKScore.report([score]) { (error) in
