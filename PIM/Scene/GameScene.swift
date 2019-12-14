@@ -33,7 +33,7 @@ let testMapBitFork =     [[1,1,1,0,0,0,1,0,0,1,1,1,1],
                           [1,0,0,0,1,0,0,0,1,0,0,0,0],
                           [1,1,1,0,0,1,1,0,0,0,1,1,1]]
 
-let testMapBitSquare = [[1,1,1,0,1,0,1,1,1,1,1,1,1],
+let testMapBitGarden = [[1,1,1,0,1,0,1,1,1,1,1,1,1],
                         [1,1,1,0,1,0,0,0,1,0,0,0,1],
                         [1,1,1,0,1,1,1,0,0,1,1,0,1],
                         [0,0,0,0,0,0,0,1,0,1,1,0,1],
@@ -76,7 +76,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     let testMapHard = Map(testMapBitHard, brickImage: "brickTexture", backgroundImage: "Background", from: [0,11], to: [11,0])
     
-    let testMapSquare = Map(testMapBitSquare, brickImage: "brickTexture", backgroundImage: "Background", from: [0,7], to: [5,0])
+    let testMapGarden = Map(testMapBitGarden, brickImage: "brickTexture", backgroundImage: "Background", from: [0,7], to: [5,0])
     
     let testMapFork = Map(testMapBitFork, brickImage: "brickTexture", backgroundImage: "Background", from: [0,3], to: [12,2])
     
