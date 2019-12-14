@@ -13,6 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var multiplayer = false
+    var map: Map!
 
     func startGame() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)

@@ -18,36 +18,45 @@ class MapViewController: UIViewController {
     
     
     @IBAction func easyTap(_ sender: Any) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.map = MapEasy
         startGame()
-        
     }
     
     
     @IBAction func intermediateTap(_ sender: Any) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.map = MapIntermediate
         startGame()
-        
     }
     
     
-    @IBAction func hardTap(_ sender: Any) {
+    @IBAction func HardTap(_ sender: Any) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.map = MapHard
         startGame()
-        
     }
     
-    @IBAction func diffcult1Tap(_ sender: Any) {
+    @IBAction func GardenTap(_ sender: Any) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.map = MapGarden
         startGame()
-        
+
     }
     
-    @IBAction func diffcult2Tap(_ sender: Any) {
+    @IBAction func ForkTap(_ sender: Any) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.map = MapFork
         startGame()
-        
     }
     
-    @IBAction func diffcult3(_ sender: Any) {
+    @IBAction func MazeTap(_ sender: Any) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.map = MapMaze
         startGame()
-        
     }
+    
+    
     
     func startGame() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate

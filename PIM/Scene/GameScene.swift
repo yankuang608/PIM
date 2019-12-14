@@ -12,47 +12,10 @@ import CoreMotion
 import Speech
 import CoreML
 
-let testMapBitEasy =  [[1,1,1,1,1,1,1,1,1,1,1,1,1],
-                       [1,0,1,0,0,0,1,0,0,0,1,0,1],
-                       [1,0,1,0,1,0,1,0,1,0,1,0,1],
-                       [1,0,0,0,1,0,0,0,1,0,0,0,1],
-                       [1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
-let testMapBitPractice = [[1,1,1,1,1,1,1,1,1,1,1,1,1],
-                          [1,1,1,1,1,1,1,1,1,1,1,1,1],
-                          [0,0,0,0,0,0,0,0,0,0,0,0,0],
-                          [1,1,1,1,1,1,1,1,1,1,1,1,1],
-                          [1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
-let testMapBitHard = [[0,1,0,0,0,1,1,1,1,1,0,0,0],
-                      [0,0,0,1,0,0,1,1,1,1,0,1,0],
-                      [1,1,1,1,1,0,0,0,1,0,0,1,0],
-                      [1,1,1,1,1,1,1,0,1,0,1,1,0],
-                      [1,1,1,1,0,0,0,0,1,0,1,0,0],
-                      [1,1,1,1,0,1,1,1,1,0,1,0,1],
-                      [1,1,1,1,0,0,0,0,0,0,1,0,0]]
-
-let testMapBitMaze = [[0,0,0,0,0,0,0,0,0,0,0,0,1],
-                      [0,1,1,1,0,0,1,1,1,0,1,0,1],
-                      [0,0,0,0,0,1,1,0,0,0,1,0,1],
-                      [1,0,1,1,0,1,1,0,1,0,1,0,0],
-                      [1,0,1,1,0,1,1,0,1,0,0,0,0],
-                      [1,0,0,1,1,0,0,0,0,0,1,1,0],
-                      [0,1,0,1,1,0,1,0,1,0,1,1,0],
-                      [0,0,0,0,0,0,1,0,1,0,1,0,0],
-                      [0,1,0,1,1,0,1,0,1,0,1,0,1],
-                      [0,1,1,0,1,0,1,0,1,1,1,0,0],
-                      [0,0,1,0,0,0,1,0,0,0,1,0,0],
-                      [1,0,1,0,1,0,1,1,1,0,1,1,1],
-                      [1,0,0,1,1,0,1,1,1,0,0,0,0]]
-
 
 class GameScene: SKScene, SFSpeechRecognizerDelegate{
     // the buddy is set in GameBeginScene
     lazy var buddy = String()
-
-    //MARK: testMap
-    let testMap = Map(testMapBitEasy, brickImage: "brickTexture", backgroundImage: "Background", from: [1,1], to: [11,1], id: "PIM.leaderboard.map1")
     
     
     //MARK: Parameters
@@ -118,7 +81,8 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         
         speechRecognizer.delegate = self
         
-        addMap(map: testMap)
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        addMap(map: appDelegate.map)
         addHealthBar()
         
         
