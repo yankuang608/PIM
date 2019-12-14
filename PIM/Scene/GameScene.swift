@@ -5,7 +5,6 @@
 //  Created by KUANG YAN on 11/8/19.
 //  Copyright © 2019 KUANG YAN. All rights reserved.
 //
-
 import Foundation
 import AVFoundation
 import SpriteKit
@@ -476,7 +475,6 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         guard let recognitionRequest = recognitionRequest else { fatalError("Unable to create a SFSpeechAudioBufferRecognitionRequest object") }
         recognitionRequest.shouldReportPartialResults = true // run the handler in recognitionTask periodically
-
         recognitionTask = speechRecognizer.recognitionTask(with: recognitionRequest) { result, error in
             var isFinal = false
 
@@ -681,7 +679,6 @@ extension GameScene: SKPhysicsContactDelegate{
             // stay 0.2 second after game over
             if self.currentHit == 0{
                 //                calculateTime(nil)
-
                 MultiplayerManager.sharedManager.delegate = nil
 
                 let reveal = SKTransition.flipHorizontal(withDuration: 0.3)
@@ -747,7 +744,4 @@ extension GameScene: MultiplayerManagerDelegate {
         
     }
 }
-
-
-
 

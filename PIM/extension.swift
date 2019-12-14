@@ -5,7 +5,6 @@
 //  Created by KUANG YAN on 11/11/19.
 //  Copyright © 2019 KUANG YAN. All rights reserved.
 //
-
 import Foundation
 import SpriteKit
 
@@ -32,6 +31,7 @@ struct petImpulse {
     static let dog         : CGFloat = 20
     static let hamster     : CGFloat = 20
     static let hamsterRun  : CGFloat = 40
+    static let rabbit      : CGFloat = 40
 }
 //extend move "up","left","down","right" method to SKSpriteNode
 //the path length is fixed and using duration to control the speed

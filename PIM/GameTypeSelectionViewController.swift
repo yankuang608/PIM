@@ -18,7 +18,7 @@ class GameTypeSelectionViewController: UIViewController {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
            appDelegate.multiplayer = false
            
-           startGame()
+          // startGame()
     }
 
     @IBAction func multiplayerGameButtonTapped(_ sender: Any) {

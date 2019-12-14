@@ -5,7 +5,6 @@
 //  Created by KUANG YAN on 11/12/19.
 //  Copyright © 2019 KUANG YAN. All rights reserved.
 //
-
 import SpriteKit
 
 class GameBeginScene: SKScene {
@@ -17,8 +16,6 @@ class GameBeginScene: SKScene {
         
         let label = SKLabelNode(fontNamed: "BradleyHandITCTT-Bold")
         label.text = "Hey, time to Choose your buddy!"
-        label.text = "is the character you will be playing with"
-
         label.fontSize = 30
         label.fontColor = SKColor.black
         label.position = CGPoint(x: size.width * 0.5, y: size.height * 0.85)
@@ -27,11 +24,11 @@ class GameBeginScene: SKScene {
 
     }
     lazy public var chosenAnimal: String? = nil
-    let pets = ["dog","turtle","hedgehog","hamster"].shuffled()
+    let pets = ["dog","turtle","hedgehog","hamster","rabbit"].shuffled()
     lazy var petButtons: [FTButtonNode] = []
     
     func addPetButton(){
-        let buttonSize = CGSize(width: size.width * 0.25, height: size.height * 0.6)
+        let buttonSize = CGSize(width: size.width * 0.2, height: size.height * 0.6)
         
         for index in pets.indices{
             let texture = SKTexture(imageNamed: pets[index])
@@ -50,18 +47,11 @@ class GameBeginScene: SKScene {
         }
     }
     
-    
     @objc func transferToGameScene(_ sender: FTButtonNode){
         self.chosenAnimal = sender.name
-        
-        
-       // MultiplayerManager.sharedManager.
-        
         // If one button is selected, hidden other buttons
         let restAnimal = petButtons.filter{ $0.name != sender.name}
-
         for animal in restAnimal{
-            
             animal.isEnabled = true
             animal.isHidden = true
         }
@@ -73,16 +63,17 @@ class GameBeginScene: SKScene {
                 let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
                 let scene = GameScene(size: self.size)
                 scene.buddy = sender.name!   //That's how I pass chosen animal to GameScene
-                
                 self.view?.presentScene(scene, transition:reveal)
-
             }
         ]))
         
+        
     }
     
+    
+    
+    
 }
-
 /*
  Turtle- Control with a joystick
 
