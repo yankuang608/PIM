@@ -18,6 +18,7 @@ class MapViewController: UIViewController {
     
     
     @IBAction func easyTap(_ sender: Any) {
+        
     }
     
     
