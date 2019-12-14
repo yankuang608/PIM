@@ -25,6 +25,23 @@ let testMapBitPractice = [[1,1,1,1,1,1,1,1,1,1,1,1,1],
                           [1,1,1,1,1,1,1,1,1,1,1,1,1],
                           [1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
+let testMapBitFork =     [[1,1,1,0,0,0,1,0,0,1,1,1,1],
+                          [1,0,0,0,1,0,0,0,1,0,0,1,1],
+                          [1,0,1,0,1,1,1,0,0,0,1,0,0],
+                          [0,0,1,1,1,0,0,1,1,0,0,0,1],
+                          [1,0,1,0,0,0,1,0,1,1,1,1,0],
+                          [1,0,0,0,1,0,0,0,1,0,0,0,0],
+                          [1,1,1,0,0,1,1,0,0,0,1,1,1]]
+
+let testMapBitSquare = [[1,1,1,0,1,0,1,1,1,1,1,1,1],
+                        [1,1,1,0,1,0,0,0,1,0,0,0,1],
+                        [1,1,1,0,1,1,1,0,0,1,1,0,1],
+                        [0,0,0,0,0,0,0,1,0,1,1,0,1],
+                        [1,0,1,1,0,1,0,1,0,0,0,0,1],
+                        [1,0,1,1,0,1,0,0,0,1,1,0,1],
+                        [1,0,1,1,0,1,0,1,0,1,1,0,1],
+                        [0,0,0,0,0,0,0,0,0,0,0,0,1]]
+
 let testMapBitHard = [[0,1,0,0,0,1,1,1,1,1,0,0,0],
                       [0,0,0,1,0,0,1,1,1,1,0,1,0],
                       [1,1,1,1,1,0,0,0,1,0,0,1,0],
@@ -58,6 +75,10 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     let testMapPractice = Map(testMapBitPractice, brickImage: "brickTexture", backgroundImage: "Background", from: [0,2], to: [12,2])
     
     let testMapHard = Map(testMapBitHard, brickImage: "brickTexture", backgroundImage: "Background", from: [0,11], to: [11,0])
+    
+    let testMapSquare = Map(testMapBitSquare, brickImage: "brickTexture", backgroundImage: "Background", from: [0,7], to: [5,0])
+    
+    let testMapFork = Map(testMapBitFork, brickImage: "brickTexture", backgroundImage: "Background", from: [0,3], to: [12,2])
     
     let testMapMaze = Map(testMapBitMaze, brickImage: "brickTexture", backgroundImage: "Background", from: [0,0], to: [12,12])
     
@@ -117,7 +138,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         
         speechRecognizer.delegate = self
         
-        addMap(map: testMapMaze)
+        addMap(map: testMapFork)
         addHealthBar()
         
         switch buddy {
