@@ -15,5 +15,24 @@ class MapViewController: UIViewController {
     override func viewDidLoad() {
     
     }
-
+    
+    
+    @IBAction func easyTap(_ sender: Any) {
+    }
+    
+    
+    @IBAction func intermediateTap(_ sender: Any) {
+    }
+    
+    
+    @IBAction func hardTap(_ sender: Any) {
+    }
+    
+    @IBAction func diffcult1Tap(_ sender: Any) {
+    }
+    
+    @IBAction func diffcult2Tap(_ sender: Any) {
+    }
+    
 }
+
