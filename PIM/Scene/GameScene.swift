@@ -53,7 +53,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     lazy var buddy = String()
 
     //MARK: testMap
-    let testMap = Map(testMapBitEasy, brickImage: "brickTexture", backgroundImage: "Background", from: [1,1], to: [11,1])
+    let testMap = Map(testMapBitEasy, brickImage: "brickTexture", backgroundImage: "Background", from: [1,1], to: [11,1], id: "PIM.leaderboard.map1")
     
     
     //MARK: Parameters

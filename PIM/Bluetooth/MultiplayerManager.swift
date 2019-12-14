@@ -47,22 +47,28 @@ class MultiplayerManager: NSObject {
     
     func initializeMultiplayerSession(delegate: MultiplayerManagerDelegate) {
         self.delegate = delegate
+        //creating peer id
         ConnectionManager.sharedManager.setupPeerWithDisplayName(displayName: UIDevice.current.name)
+       //setting up session with the peer id
         ConnectionManager.sharedManager.setupSession()
+        //advertising ourself in the network with the peer id
         ConnectionManager.sharedManager.advertiseSelf(advertise: true)
         
+        //communitation between multiplayer and connection manger classes
         NotificationCenter.default.addObserver(self, selector: #selector(didChangeStateNotification), name: NSNotification.Name(rawValue: ConnectionManager.kConnectionManagerDidChangeStateNotification), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didReceiveDataNotification), name: NSNotification.Name(rawValue: ConnectionManager.kConnectionManagerDidReceiveDataNotification), object: nil)
         
     }
-    
+    //send my score to everyone
     func sendMyScore(_ score: Int) {
+        //host will broadcast scores
         if self.isHost {
             myScore = score
             scoreDict[UIDevice.current.name] = myScore
                 ConnectionManager.sharedManager.send(scoreDict)
                 delegate?.scoresDidChange?(scoresDict: scoreDict)
         } else {
+            //send only players score
             ConnectionManager.sharedManager.send(["name": UIDevice.current.name, "score": score])
         }
     }
@@ -116,6 +122,7 @@ extension MultiplayerManager: MCBrowserViewControllerDelegate {
     }
 }
 
+//join a session
 extension MultiplayerManager {
     private func joinASession(with viewController: UIViewController) {
         if ConnectionManager.sharedManager.session != nil {
