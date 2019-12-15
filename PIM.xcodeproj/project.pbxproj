@@ -69,6 +69,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		360ADE8A23A6940400131AC3 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				36ED7EB52374F7730078BA7D /* ViewController.swift */,
+				BD622F1523A178F00047BBC2 /* GameTypeSelectionViewController.swift */,
+				BDBF39B323A4676B008390CA /* MapViewController.swift */,
+				BDBF39B723A483FE008390CA /* CharcterViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
 		3662265A237B5BC800369028 /* Scene */ = {
 			isa = PBXGroup;
 			children = (
@@ -87,6 +98,8 @@
 				36EFC1A32377D470003192D9 /* OperationOverload.swift */,
 				36ECAEF32386F88400E1B4E5 /* RingBuffer.swift */,
 				BD9EB55B23A4B34F000900D5 /* GameCenter.swift */,
+				366300152379E07300028310 /* extension.swift */,
+				36EFC1A123762CBE003192D9 /* Map.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -119,21 +132,16 @@
 		36ED7EB22374F7720078BA7D /* PIM */ = {
 			isa = PBXGroup;
 			children = (
+				360ADE8A23A6940400131AC3 /* ViewControllers */,
 				BD622F1023A178260047BBC2 /* Bluetooth */,
 				36ECAEF5238827AE00E1B4E5 /* model */,
 				3662265B237B5C0200369028 /* Helper */,
 				3662265A237B5BC800369028 /* Scene */,
 				36ED7EB32374F7730078BA7D /* AppDelegate.swift */,
-				36ED7EB52374F7730078BA7D /* ViewController.swift */,
-				36EFC1A123762CBE003192D9 /* Map.swift */,
-				366300152379E07300028310 /* extension.swift */,
 				36ED7EB72374F7730078BA7D /* Main.storyboard */,
-				BDBF39B723A483FE008390CA /* CharcterViewController.swift */,
-				36ED7EBA2374F7740078BA7D /* Assets.xcassets */,
 				36ED7EBC2374F7740078BA7D /* LaunchScreen.storyboard */,
 				36ED7EBF2374F7740078BA7D /* Info.plist */,
-				BD622F1523A178F00047BBC2 /* GameTypeSelectionViewController.swift */,
-				BDBF39B323A4676B008390CA /* MapViewController.swift */,
+				36ED7EBA2374F7740078BA7D /* Assets.xcassets */,
 			);
 			path = PIM;
 			sourceTree = "<group>";
