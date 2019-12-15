@@ -35,6 +35,8 @@ struct petImpulse {
 }
 //extend move "up","left","down","right" method to SKSpriteNode
 //the path length is fixed and using duration to control the speed
+
+
 extension SKSpriteNode{
     var sceneSize: CGSize{
         get{
