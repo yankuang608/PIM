@@ -32,7 +32,7 @@ class GameOverScene: SKScene {
         
         // 4
         run(SKAction.sequence([
-            SKAction.wait(forDuration: 7.0),
+            SKAction.wait(forDuration: 4.0),
             SKAction.run() { [weak self] in
                 // 5
 //                guard let `self` = self else { return }

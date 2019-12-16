@@ -27,8 +27,8 @@
 		BD9EB55C23A4B34F000900D5 /* GameCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9EB55B23A4B34F000900D5 /* GameCenter.swift */; };
 		BDBF39B423A4676B008390CA /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBF39B323A4676B008390CA /* MapViewController.swift */; };
 		BDBFB6CB23A735DA005C38DB /* RandomForestMotion.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = BDBFB6CA23A735DA005C38DB /* RandomForestMotion.mlmodel */; };
-		BDBFB6CD23A73636005C38DB /* RandomForestMagnets.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = BDBFB6CC23A73636005C38DB /* RandomForestMagnets.mlmodel */; };
 		BDBFB6CF23A77D8A005C38DB /* BGM.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BDBFB6CE23A77D89005C38DB /* BGM.mp3 */; };
+		BDBFB6D723A7F695005C38DB /* RandomForestMag.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = BDBFB6D623A7F695005C38DB /* RandomForestMag.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,8 +54,8 @@
 		BD9EB55B23A4B34F000900D5 /* GameCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenter.swift; sourceTree = "<group>"; };
 		BDBF39B323A4676B008390CA /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		BDBFB6CA23A735DA005C38DB /* RandomForestMotion.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = RandomForestMotion.mlmodel; sourceTree = "<group>"; };
-		BDBFB6CC23A73636005C38DB /* RandomForestMagnets.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = RandomForestMagnets.mlmodel; sourceTree = "<group>"; };
 		BDBFB6CE23A77D89005C38DB /* BGM.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = BGM.mp3; sourceTree = "<group>"; };
+		BDBFB6D623A7F695005C38DB /* RandomForestMag.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = RandomForestMag.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,7 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				BDBFB6CA23A735DA005C38DB /* RandomForestMotion.mlmodel */,
-				BDBFB6CC23A73636005C38DB /* RandomForestMagnets.mlmodel */,
+				BDBFB6D623A7F695005C38DB /* RandomForestMag.mlmodel */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -227,7 +227,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BDBFB6CD23A73636005C38DB /* RandomForestMagnets.mlmodel in Sources */,
 				36EFC1A42377D470003192D9 /* OperationOverload.swift in Sources */,
 				36EFC1A0237613BF003192D9 /* GameScene.swift in Sources */,
 				BD622F1423A178BD0047BBC2 /* MultiplayerManager.swift in Sources */,
@@ -243,6 +242,7 @@
 				BD622F1223A178830047BBC2 /* ConnectionManager.swift in Sources */,
 				BD9EB55C23A4B34F000900D5 /* GameCenter.swift in Sources */,
 				36EFC1A223762CBE003192D9 /* Map.swift in Sources */,
+				BDBFB6D723A7F695005C38DB /* RandomForestMag.mlmodel in Sources */,
 				36ED7EB42374F7730078BA7D /* AppDelegate.swift in Sources */,
 				BDBF39B423A4676B008390CA /* MapViewController.swift in Sources */,
 			);

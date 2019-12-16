@@ -3,6 +3,7 @@
 //  PIM
 //
 //  Created by KUANG YAN on 11/8/19.
+// Modified by Xavier Carrillo 11/10/2019
 //  Copyright © 2019 KUANG YAN. All rights reserved.
 //
 import Foundation
@@ -123,3 +124,6 @@ let MapMaze = Map(MapBitMaze, brickImage: "brickTexture", backgroundImage: "Back
 let mapsArray = [MapEasy, MapIntermediate, MapHard, MapFork, MapGarden, MapMaze]
 
 var selectedMap: Map? = nil
+
+
+

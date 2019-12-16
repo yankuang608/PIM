@@ -56,7 +56,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     lazy var isWaitingForMotionData: Bool = true
     
     let RFMotion = RandomForestMotion()           // Model for hamster
-    let RFMagnets = RandomForestMagnets()  // Model for rabbit
+    let RFMagnets = RandomForestMag()  // Model for rabbit
     
     var counter: Int = 3            // counting down at the beginning of game
     let countDownLabel = SKLabelNode(fontNamed: "Chalkduster")
@@ -370,7 +370,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     
     func addJoyStick(){
-        let velocityMultiplier: CGFloat = 0.035
+        let velocityMultiplier: CGFloat = 0.03
         let joystick = AnalogJoystick(diameter: buttonSize.width, colors: nil,
                                       images: (UIImage(named: "substrate"), UIImage(named:"stick")))
         joystick.position = buttonPosition
