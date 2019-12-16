@@ -11,8 +11,7 @@ import UIKit
 class GameTypeSelectionViewController: UIViewController {
     
     override func viewDidLoad() {
-        GameCenter.shared.authenticateLocalPlayer(presentingVC: self)
-        
+       // GameCenter.shared.authenticateLocalPlayer(presentingVC: self)
     }
     
     @IBAction func singlePlayerGameButtonTapped(_ sender: Any) {

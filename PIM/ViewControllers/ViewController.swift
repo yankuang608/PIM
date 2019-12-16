@@ -14,6 +14,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        GameCenter.shared.authenticateLocalPlayer(presentingVC: self)
+
+        
         let scene = GameBeginScene(size: view.bounds.size)
         scene.scaleMode = .resizeFill
         
