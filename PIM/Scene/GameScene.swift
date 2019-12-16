@@ -742,11 +742,7 @@ extension GameScene: SKPhysicsContactDelegate{
             
             // upload score to the game center
 
-            DispatchQueue.global(qos: .background).async {
-                
-                // update the score to Game Center
-                self.updateScore(self.score)
-            }
+            self.updateScore(self.score)
             
             // show The leaderBoard
             showLeaderBoard()
