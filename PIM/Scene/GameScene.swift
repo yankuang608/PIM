@@ -80,8 +80,17 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         
         speechRecognizer.delegate = self
         
+        //map selector
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        addMap(map: appDelegate.map)
+        //map for multiplayer
+        if selectedMap != nil {
+            addMap(map: selectedMap!)
+            //map for single player
+            
+        } else if appDelegate.map != nil {
+            addMap(map: appDelegate.map)
+            
+        }
         
         addHealthBar()
         

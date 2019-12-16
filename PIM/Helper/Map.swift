@@ -120,8 +120,6 @@ let MapGarden = Map(MapBitGarden, brickImage: "brickTexture", backgroundImage: "
 
 let MapMaze = Map(MapBitMaze, brickImage: "brickTexture", backgroundImage: "Background", from: [5,8], to: [13,7], id: "")
 
+let mapsArray = [MapEasy, MapIntermediate, MapHard, MapFork, MapGarden, MapMaze]
 
-
-
-
-
+var selectedMap: Map? = nil

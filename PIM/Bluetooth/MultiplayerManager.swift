@@ -12,6 +12,7 @@ import MultipeerConnectivity
 @objc protocol MultiplayerManagerDelegate: class {
     @objc optional func connectionStatusDidChange(status: Int)
     @objc optional func scoresDidChange(scoresDict: Dictionary<String, Int>)
+    @objc optional func mapSelected(map: Int)
 }
 
 class MultiplayerManager: NSObject {
@@ -49,7 +50,7 @@ class MultiplayerManager: NSObject {
         self.delegate = delegate
         //creating peer id
         ConnectionManager.sharedManager.setupPeerWithDisplayName(displayName: UIDevice.current.name)
-       //setting up session with the peer id
+        //setting up session with the peer id
         ConnectionManager.sharedManager.setupSession()
         //advertising ourself in the network with the peer id
         ConnectionManager.sharedManager.advertiseSelf(advertise: true)
@@ -65,8 +66,8 @@ class MultiplayerManager: NSObject {
         if self.isHost {
             myScore = score
             scoreDict[UIDevice.current.name] = myScore
-                ConnectionManager.sharedManager.send(scoreDict)
-                delegate?.scoresDidChange?(scoresDict: scoreDict)
+            ConnectionManager.sharedManager.send(scoreDict)
+            delegate?.scoresDidChange?(scoresDict: scoreDict)
         } else {
             //send only players score
             ConnectionManager.sharedManager.send(["name": UIDevice.current.name, "score": score])
@@ -79,6 +80,12 @@ extension MultiplayerManager {
         if let userInfo = notification.userInfo {
             delegate?.connectionStatusDidChange?(status: userInfo["state"] as! Int)
         }
+        
+        if isHost {
+            let randomMap = Int.random(in: 0...5)
+            delegate?.mapSelected?(map: randomMap)
+            ConnectionManager.sharedManager.send(["map": randomMap])
+        }
     }
     
     @objc func didReceiveDataNotification(_ notification: Notification) {
@@ -90,14 +97,15 @@ extension MultiplayerManager {
                 let jsonDict = json as! Dictionary<String, Any>
                 scoreDict[jsonDict["name"] as! String] = jsonDict["score"] as? Int
                 print("Score dictionary:\(scoreDict)")
-//                print("Connected peers: \(ConnectionManager.sharedManager.session.connectedPeers.count) & keys:\((scoreDict.keys.count - 1))")
-//                if shouldSendScore() {
-                    delegate?.scoresDidChange?(scoresDict: scoreDict)
-                    ConnectionManager.sharedManager.send(scoreDict)
-//                }
+                delegate?.scoresDidChange?(scoresDict: scoreDict)
+                ConnectionManager.sharedManager.send(scoreDict)
             } else {
                 // Guest
                 let scoreDict = json as! Dictionary<String, Int>
+                if scoreDict["map"] != nil {
+                    selectedMap = mapsArray[scoreDict["map"]!]
+                    delegate?.mapSelected?(map: scoreDict["map"]!)
+                }
                 delegate?.scoresDidChange?(scoresDict: scoreDict)
             }
         }

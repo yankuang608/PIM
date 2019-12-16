@@ -46,6 +46,10 @@ extension GameTypeSelectionViewController: MultiplayerManagerDelegate {
             startGame()
         }
     }
+    
+    func mapSelected(map: Int) {
+        selectedMap = mapsArray[map]
+    }
 
 }
 

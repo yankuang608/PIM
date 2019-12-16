@@ -51,7 +51,10 @@ class ConnectionManager: NSObject {
     func send(_ dictionary: Any) {
         do {
             let messageData = try JSONSerialization.data(withJSONObject: dictionary, options: .prettyPrinted)
-            try session.send(messageData, toPeers: session.connectedPeers, with: .reliable)
+            if session != nil {
+                try session.send(messageData, toPeers: session.connectedPeers, with: .reliable)
+
+            }
         } catch {
             print(error.localizedDescription)
         }
