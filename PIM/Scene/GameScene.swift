@@ -824,5 +824,6 @@ extension GameScene: MultiplayerManagerDelegate {
 extension GameScene: GKGameCenterControllerDelegate {
     func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
         gameCenterViewController.dismiss(animated: true, completion: nil)
+        toGameOverScene()
     }
 }
