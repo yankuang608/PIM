@@ -365,7 +365,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     
     func addJoyStick(){
-        let velocityMultiplier: CGFloat = 0.02
+        let velocityMultiplier: CGFloat = 0.05
         let joystick = AnalogJoystick(diameter: buttonSize.width, colors: nil,
                                       images: (UIImage(named: "substrate"), UIImage(named:"stick")))
         joystick.position = buttonPosition
@@ -743,11 +743,14 @@ extension GameScene: SKPhysicsContactDelegate{
             // upload score to the game center
 
             DispatchQueue.global(qos: .background).async {
-                GameCenter.shared.updateScore(self.score, with: self.buddy, to: appDelegate.map.leaderBoardID)
+                
+                // update the score to Game Center
+                self.updateScore(self.score)
             }
             
             // show The leaderBoard
-//            showLeaderBoard()
+            showLeaderBoard()
+            
             let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
             let gameOverScene = GameOverScene(size: self.size, won: true, winner: "")
             self.cleanup()
@@ -757,18 +760,33 @@ extension GameScene: SKPhysicsContactDelegate{
         
     }
     
-    func showLeaderBoard(){
-           let viewController = self.view?.window?.rootViewController
-           let gcvc = GKGameCenterViewController()
-           let appDelegate = UIApplication.shared.delegate as! AppDelegate
-           
-           gcvc.leaderboardIdentifier = appDelegate.map.leaderBoardID
-           
-           gcvc.gameCenterDelegate = self as? GKGameCenterControllerDelegate
-           
-           viewController?.present(gcvc, animated: true, completion: nil)
-           
-       }
+    func showLeaderBoard() {
+        let viewController = self.view?.window?.rootViewController
+        let gcvc = GKGameCenterViewController()
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        
+        gcvc.leaderboardIdentifier = appDelegate.map.leaderBoardID
+        
+        gcvc.gameCenterDelegate = self
+        
+        viewController?.present(gcvc, animated: true, completion: nil)
+        
+    }
+    
+    func updateScore(_ score: TimeInterval) {
+        if GKLocalPlayer.local.isAuthenticated{
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            
+            let scoreReporter = GKScore(leaderboardIdentifier: appDelegate.map.leaderBoardID)
+            
+            scoreReporter.value = Int64(score)
+            
+            let scoreArray: [GKScore] = [scoreReporter]
+            
+            GKScore.report(scoreArray, withCompletionHandler: nil)
+        }
+    }
+
     
     // stop core motion, audioEngine, etc
     func cleanup(){
@@ -794,5 +812,11 @@ extension GameScene: MultiplayerManagerDelegate {
         view?.presentScene(gameOverScene, transition: reveal)
         
         
+    }
+}
+
+extension GameScene: GKGameCenterControllerDelegate {
+    func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
+        gameCenterViewController.dismiss(animated: true, completion: nil)
     }
 }
