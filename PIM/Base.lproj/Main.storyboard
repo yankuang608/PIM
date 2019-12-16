@@ -11,7 +11,7 @@
         <!--Game Type Selection View Controller-->
         <scene sceneID="Qhz-SM-tMW">
             <objects>
-                <viewController id="Aa8-MH-wSz" customClass="GameTypeSelectionViewController" customModule="PIM" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="main_screen" id="Aa8-MH-wSz" customClass="GameTypeSelectionViewController" customModule="PIM" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="qjC-GV-fOH">
                         <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -75,6 +75,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="vYR-uX-ReC"/>
                     </view>
+                    <navigationItem key="navigationItem" id="yX3-L0-bVi"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wlV-LQ-yCZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -221,6 +222,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="VaR-GL-Uip"/>
                     </view>
+                    <navigationItem key="navigationItem" id="b6u-ZB-MdM"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lvc-b6-UcB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -236,6 +238,9 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <segue destination="Aa8-MH-wSz" kind="show" identifier="main_screen" id="ZGz-id-SDP"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

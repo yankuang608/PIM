@@ -9,15 +9,17 @@
 import SpriteKit
 
 class GameOverScene: SKScene {
-
-    init(size: CGSize, won:Bool, winner: String) {
-    super.init(size: size)
-
-    // 1
-    backgroundColor = SKColor.white
+    //var viewController: GameTypeSelectionViewController?
     
-    // 2
-    let message = won ? "You Won!" : (winner.count > 0 ? "\(winner) won :(, you lose" : "You lose :(")
+    init(size: CGSize, won:Bool, winner: String) {
+        super.init(size: size)
+        
+        // 1
+        backgroundColor = SKColor.white
+        
+        // 2
+        let message = won ? "You Won!" : (winner.count > 0 ? "\(winner) won :(, you lose" : "You lose :(")
+        
         // 3
         let label = SKLabelNode(fontNamed: "BradleyHandITCTT-Bold")
         label.text = message
@@ -31,16 +33,16 @@ class GameOverScene: SKScene {
             SKAction.wait(forDuration: 3.0),
             SKAction.run() { [weak self] in
                 // 5
-                guard let `self` = self else { return }
-                let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
-                let scene = GameBeginScene(size: size)
-                self.view?.presentScene(scene, transition:reveal)
+//                guard let `self` = self else { return }
+                let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                appDelegate.endgame()
             }
-            ]))
+        ]))
     }
     
     // 6
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
 }

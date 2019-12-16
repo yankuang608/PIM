@@ -12,6 +12,8 @@ class GameCenter {
     
     static let shared = GameCenter()
     
+    var scores: [(playerName: String, score: String, chosenPet: String)]?
+    
     private init() {
         
     }
@@ -48,7 +50,7 @@ class GameCenter {
     
     // method for loading scores from leaderboard
     
-    func loadScores(from leaderboardID: String) -> ([(playerName: String, score: String, chosenPet: String)])? {
+    func loadScores(from leaderboardID: String){
         
         // fetch leaderboard for current map from Game Center
         fetchLeaderboard(leaderboardID)
@@ -81,11 +83,12 @@ class GameCenter {
                         let pet = self.contextPetMap[Int(score.context)]
                         
                         leaderBoardInfo?.append((playerName: name, score: userScore, chosenPet: pet))
+                        
+                        self.scores = leaderBoardInfo
                     }
                 }
             }
         }
-        return leaderBoardInfo
     }
     
     
@@ -114,8 +117,6 @@ class GameCenter {
     // local player
     
     private var localPlayer = GKLocalPlayer.local
-    
-    private var scores: [(playerName: String, score: Int)]?
  
     private var leaderboard: GKLeaderboard?
     

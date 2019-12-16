@@ -722,39 +722,39 @@ extension GameScene: SKPhysicsContactDelegate{
     }
     
     func petReachFinishLine(){
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
         if appDelegate.multiplayer == true {
-        MultiplayerManager.sharedManager.sendMyScore(0)
-        MultiplayerManager.sharedManager.delegate = nil
+            MultiplayerManager.sharedManager.sendMyScore(0)
+            MultiplayerManager.sharedManager.delegate = nil
             
             score = Date().timeIntervalSince(startDate)
-
+            
             
             let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
-                   let gameOverScene = GameOverScene(size: self.size, won: true, winner: "")
-                   self.cleanup()
-                   self.view?.presentScene(gameOverScene, transition: reveal)
-        
+            let gameOverScene = GameOverScene(size: self.size, won: true, winner: "")
+            self.cleanup()
+            self.view?.presentScene(gameOverScene, transition: reveal)
+            
         } else {
-          // record the score for this round of game
-        
-        score = Date().timeIntervalSince(startDate)
-        
-        // upload score to the game center
-        
-        DispatchQueue.global(qos: .background).async {
-            GameCenter.shared.updateScore(self.score, with: self.buddy, to: MapEasy.leaderBoardID)
-        }
-        
-        // show The leaderBoard
-        showLeaderBoard()
+            // record the score for this round of game
+            
+            score = Date().timeIntervalSince(startDate)
+            
+            // upload score to the game center
+
+            DispatchQueue.global(qos: .background).async {
+                GameCenter.shared.updateScore(self.score, with: self.buddy, to: appDelegate.map.leaderBoardID)
+            }
+            
+            // show The leaderBoard
+//            showLeaderBoard()
             let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
             let gameOverScene = GameOverScene(size: self.size, won: true, winner: "")
             self.cleanup()
             self.view?.presentScene(gameOverScene, transition: reveal)
             
         }
-
+        
     }
     
     func showLeaderBoard(){

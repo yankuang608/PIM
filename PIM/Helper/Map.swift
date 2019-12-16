@@ -107,18 +107,18 @@ let MapBitMaze = [        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 
 
 // create maps
-let MapEasy = Map(MapBitEasy, brickImage: "brickTexture", backgroundImage: "Background", from: [1,2], to: [11,2], id: "")
+let MapEasy = Map(MapBitEasy, brickImage: "brickTexture", backgroundImage: "Background", from: [1,2], to: [11,2], id: "PetInMazeGame.MapEasy")
 
-let MapIntermediate = Map(MapBitIntermediate, brickImage: "brickTexture", backgroundImage: "Background", from: [1,1], to: [11,1], id: "")
+let MapIntermediate = Map(MapBitIntermediate, brickImage: "brickTexture", backgroundImage: "Background", from: [1,1], to: [11,1], id: "PetInMazeGame.MapMid")
 
 
-let MapHard = Map(MapBitHard, brickImage: "brickTexture", backgroundImage: "Background", from: [1,1], to: [12,5], id: "")
+let MapHard = Map(MapBitHard, brickImage: "brickTexture", backgroundImage: "Background", from: [1,1], to: [12,5], id: "PetInMazeGame.MapHard")
 
-let MapFork = Map(MapBitFork, brickImage: "brickTexture", backgroundImage: "Background", from: [6,1], to: [3,2], id: "")
+let MapFork = Map(MapBitFork, brickImage: "brickTexture", backgroundImage: "Background", from: [6,1], to: [3,2], id: "PetInMazeGame.MapFork")
 
-let MapGarden = Map(MapBitGarden, brickImage: "brickTexture", backgroundImage: "Background", from: [4,5], to: [10,1], id: "")
+let MapGarden = Map(MapBitGarden, brickImage: "brickTexture", backgroundImage: "Background", from: [4,5], to: [10,1], id: "PetInMazeGame.MapGarden")
 
-let MapMaze = Map(MapBitMaze, brickImage: "brickTexture", backgroundImage: "Background", from: [5,8], to: [13,7], id: "")
+let MapMaze = Map(MapBitMaze, brickImage: "brickTexture", backgroundImage: "Background", from: [5,8], to: [13,7], id: "PetInMazeGame.MapMaze")
 
 let mapsArray = [MapEasy, MapIntermediate, MapHard, MapFork, MapGarden, MapMaze]
 
