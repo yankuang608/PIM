@@ -48,7 +48,8 @@ class ConnectionManager: NSObject {
     }
     //from viewcontroller to multiplayer to connection manager
     //sending data
-    func send(_ dictionary: Any) {
+    func send(_ dictionary: Dictionary<String, Any>) {
+
         do {
             let messageData = try JSONSerialization.data(withJSONObject: dictionary, options: .prettyPrinted)
             if session != nil {

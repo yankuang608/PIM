@@ -11,7 +11,7 @@ import MultipeerConnectivity
 
 @objc protocol MultiplayerManagerDelegate: class {
     @objc optional func connectionStatusDidChange(status: Int)
-    @objc optional func scoresDidChange(scoresDict: Dictionary<String, Int>)
+    @objc optional func scoresDidChange(scoresDict: Dictionary<String, Any>)
     @objc optional func mapSelected(map: Int)
 }
 
@@ -21,8 +21,8 @@ class MultiplayerManager: NSObject {
     public weak var delegate: MultiplayerManagerDelegate? = nil
     private var isHost = true
     public var myScore = -1
-    public var scoreDict = Dictionary<String, Int>()
-    
+    public var scoreDict = Dictionary<String, Any>()
+
     //alert to join or host session
     
     func showSessionSelector(onViewController: UIViewController) {
@@ -101,10 +101,10 @@ extension MultiplayerManager {
                 ConnectionManager.sharedManager.send(scoreDict)
             } else {
                 // Guest
-                let scoreDict = json as! Dictionary<String, Int>
+                let scoreDict = json as! Dictionary<String, Any>
                 if scoreDict["map"] != nil {
-                    selectedMap = mapsArray[scoreDict["map"]!]
-                    delegate?.mapSelected?(map: scoreDict["map"]!)
+                    selectedMap = mapsArray[(scoreDict["map"]!) as! Int]
+                    delegate?.mapSelected?(map: (scoreDict["map"]!) as! Int)
                 }
                 delegate?.scoresDidChange?(scoresDict: scoreDict)
             }

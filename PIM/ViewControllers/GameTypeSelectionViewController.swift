@@ -9,11 +9,26 @@
 import UIKit
 import GameKit
 
-class GameTypeSelectionViewController: UIViewController, GKGameCenterControllerDelegate {
+class GameTypeSelectionViewController: UIViewController {
     
     override func viewDidLoad() {
         authenPlayer()
     }
+    
+    @IBAction func leaderBoardTapped(_ sender: Any) {
+        showLeaderBoard()
+    }
+    
+    func showLeaderBoard() {
+        let viewController = self.view?.window?.rootViewController
+        let gcvc = GKGameCenterViewController()
+
+        gcvc.gameCenterDelegate = self
+        
+        viewController?.present(gcvc, animated: true, completion: nil)
+        
+    }
+    
     
     @IBAction func singlePlayerGameButtonTapped(_ sender: Any) {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -53,9 +68,6 @@ class GameTypeSelectionViewController: UIViewController, GKGameCenterControllerD
         }
     }
     
-    func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
-        gameCenterViewController.dismiss(animated: true, completion: nil)
-    }
 }
 
 extension GameTypeSelectionViewController: MultiplayerManagerDelegate {
@@ -69,6 +81,12 @@ extension GameTypeSelectionViewController: MultiplayerManagerDelegate {
         selectedMap = mapsArray[map]
     }
 
+}
+
+extension GameTypeSelectionViewController: GKGameCenterControllerDelegate {
+    func gameCenterViewControllerDidFinish(_ gameCenterViewController:  GKGameCenterViewController) {
+        gameCenterViewController.dismiss(animated: true, completion: nil)
+    }
 }
 
 

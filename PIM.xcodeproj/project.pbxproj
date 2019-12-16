@@ -72,9 +72,9 @@
 		360ADE8A23A6940400131AC3 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				36ED7EB52374F7730078BA7D /* ViewController.swift */,
 				BD622F1523A178F00047BBC2 /* GameTypeSelectionViewController.swift */,
 				BDBF39B323A4676B008390CA /* MapViewController.swift */,
+				36ED7EB52374F7730078BA7D /* ViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";

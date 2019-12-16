@@ -85,13 +85,30 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1zm-Gt-D32">
+                                <rect key="frame" x="398.5" y="299" width="99" height="40"/>
+                                <color key="backgroundColor" systemColor="systemPurpleColor" red="0.68627450980000004" green="0.32156862749999998" blue="0.87058823529999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="99" id="rKr-IO-uQi"/>
+                                    <constraint firstAttribute="height" constant="40" id="siP-lf-Gex"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Noteworthy-Light" family="Noteworthy" pointSize="17"/>
+                                <state key="normal" title="LeaderBoard">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="leaderBoardTapped:" destination="Aa8-MH-wSz" eventType="touchUpInside" id="kNt-Lr-ezG"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="6dK-Rj-BnA" firstAttribute="centerX" secondItem="qjC-GV-fOH" secondAttribute="centerX" id="0Di-GO-gAG"/>
                             <constraint firstItem="Bqm-6c-Zp7" firstAttribute="top" secondItem="6dK-Rj-BnA" secondAttribute="bottom" constant="80" id="5LN-xf-BCv"/>
+                            <constraint firstItem="1zm-Gt-D32" firstAttribute="centerX" secondItem="qjC-GV-fOH" secondAttribute="centerX" id="HVB-2d-wzW"/>
                             <constraint firstItem="6dK-Rj-BnA" firstAttribute="top" secondItem="vYR-uX-ReC" secondAttribute="top" constant="43" id="LNG-EJ-06K"/>
                             <constraint firstItem="Bqm-6c-Zp7" firstAttribute="centerX" secondItem="qjC-GV-fOH" secondAttribute="centerX" id="U0h-Hr-gZk"/>
+                            <constraint firstItem="1zm-Gt-D32" firstAttribute="top" secondItem="Bqm-6c-Zp7" secondAttribute="bottom" constant="41" id="mUO-95-QpW"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="vYR-uX-ReC"/>
                     </view>

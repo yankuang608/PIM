@@ -747,9 +747,6 @@ extension GameScene: SKPhysicsContactDelegate{
 
             self.updateScore(self.score)
             
-            // show The leaderBoard
-            showLeaderBoard()
-            
             toGameOverScene()
             
         }
@@ -766,18 +763,18 @@ extension GameScene: SKPhysicsContactDelegate{
     }
     
     
-    func showLeaderBoard() {
-        let viewController = self.view?.window?.rootViewController
-        let gcvc = GKGameCenterViewController()
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        
-        gcvc.leaderboardIdentifier = appDelegate.map.leaderBoardID
-        
-        gcvc.gameCenterDelegate = self
-        
-        viewController?.present(gcvc, animated: true, completion: nil)
-        
-    }
+//    func showLeaderBoard() {
+//        let viewController = self.view?.window?.rootViewController
+//        let gcvc = GKGameCenterViewController()
+//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+//
+//        gcvc.leaderboardIdentifier = appDelegate.map.leaderBoardID
+//
+//        gcvc.gameCenterDelegate = self
+//
+//        viewController?.present(gcvc, animated: true, completion: nil)
+//
+//    }
     
     func updateScore(_ score: TimeInterval) {
         if GKLocalPlayer.local.isAuthenticated{
@@ -803,8 +800,7 @@ extension GameScene: SKPhysicsContactDelegate{
 }
 
 extension GameScene: MultiplayerManagerDelegate {
-    func scoresDidChange(scoresDict: Dictionary<String, Int>) {
-        
+    func scoresDidChange(scoresDict: Dictionary<String, Any>) {
         var winner = ""
         for key in scoresDict.keys {
             winner = key
