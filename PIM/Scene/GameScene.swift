@@ -54,7 +54,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     lazy var isWaitingForMotionData: Bool = true
     
-    let RFMotion = RandomForest()           // Model for hamster
+    let RFMotion = RandomForestMotion()           // Model for hamster
     let RFMagnets = RandomForestMagnets()  // Model for rabbit
     
     var counter: Int = 3            // counting down at the beginning of game
@@ -79,6 +79,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         physicsWorld.contactDelegate = self
         
         speechRecognizer.delegate = self
+        
         
         //map selector
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -733,29 +734,14 @@ extension GameScene: SKPhysicsContactDelegate{
         
         // upload score to the game center
         
-//        // TODO: popover a window showing the result
-//        GameCenter.shared.updateScore(self.score, with: self.buddy, to: self.testMap.leaderBoardID)
-//        let leaderBoardInfo =  GameCenter.shared.loadScores(from: self.testMap.leaderBoardID)
-//        if leaderBoardInfo != nil{
-//            for info in leaderBoardInfo!{
-//                print(info)
-//            }
-//        }
-        
+
         let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
         let gameOverScene = GameOverScene(size: self.size, won: true, winner: "")
         self.cleanup()
         self.view?.presentScene(gameOverScene, transition: reveal)
     }
     
-//    func calculateTime(_ endTime: Date?) {
-//        var score = 0
-//        if endTime != nil && startTime != nil {
-//            score = Int((endTime?.timeIntervalSince(startTime!))!)
-//        }
-//        MultiplayerManager.sharedManager.sendMyScore(score)
-//    }
-    
+
     
     // stop core motion, audioEngine, etc
     func cleanup(){
@@ -783,4 +769,3 @@ extension GameScene: MultiplayerManagerDelegate {
         
     }
 }
-

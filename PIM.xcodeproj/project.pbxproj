@@ -13,7 +13,6 @@
 		3663001C237A1D9000028310 /* AnalogJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3663001B237A1D8F00028310 /* AnalogJoystick.swift */; };
 		3663001E237A904C00028310 /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3663001D237A904C00028310 /* GameOverScene.swift */; };
 		36ECAEF42386F88400E1B4E5 /* RingBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36ECAEF32386F88400E1B4E5 /* RingBuffer.swift */; };
-		36ECAEF72388283100E1B4E5 /* RandomForest.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 36ECAEF62388283100E1B4E5 /* RandomForest.mlmodel */; };
 		36ED7EB42374F7730078BA7D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36ED7EB32374F7730078BA7D /* AppDelegate.swift */; };
 		36ED7EB62374F7730078BA7D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36ED7EB52374F7730078BA7D /* ViewController.swift */; };
 		36ED7EB92374F7730078BA7D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36ED7EB72374F7730078BA7D /* Main.storyboard */; };
@@ -25,10 +24,10 @@
 		BD622F1223A178830047BBC2 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD622F1123A178830047BBC2 /* ConnectionManager.swift */; };
 		BD622F1423A178BD0047BBC2 /* MultiplayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD622F1323A178BD0047BBC2 /* MultiplayerManager.swift */; };
 		BD622F1623A178F00047BBC2 /* GameTypeSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD622F1523A178F00047BBC2 /* GameTypeSelectionViewController.swift */; };
-		BD84F5A923A58FCE00246F09 /* RandomForestMagnets.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = BD84F5A823A58FCD00246F09 /* RandomForestMagnets.mlmodel */; };
 		BD9EB55C23A4B34F000900D5 /* GameCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9EB55B23A4B34F000900D5 /* GameCenter.swift */; };
 		BDBF39B423A4676B008390CA /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBF39B323A4676B008390CA /* MapViewController.swift */; };
-		BDBF39B823A483FE008390CA /* CharcterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBF39B723A483FE008390CA /* CharcterViewController.swift */; };
+		BDBFB6CB23A735DA005C38DB /* RandomForestMotion.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = BDBFB6CA23A735DA005C38DB /* RandomForestMotion.mlmodel */; };
+		BDBFB6CD23A73636005C38DB /* RandomForestMagnets.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = BDBFB6CC23A73636005C38DB /* RandomForestMagnets.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,7 +37,6 @@
 		3663001B237A1D8F00028310 /* AnalogJoystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalogJoystick.swift; sourceTree = "<group>"; };
 		3663001D237A904C00028310 /* GameOverScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
 		36ECAEF32386F88400E1B4E5 /* RingBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingBuffer.swift; sourceTree = "<group>"; };
-		36ECAEF62388283100E1B4E5 /* RandomForest.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = RandomForest.mlmodel; sourceTree = "<group>"; };
 		36ED7EB02374F7720078BA7D /* PIM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PIM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36ED7EB32374F7730078BA7D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		36ED7EB52374F7730078BA7D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -52,10 +50,10 @@
 		BD622F1123A178830047BBC2 /* ConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
 		BD622F1323A178BD0047BBC2 /* MultiplayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerManager.swift; sourceTree = "<group>"; };
 		BD622F1523A178F00047BBC2 /* GameTypeSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTypeSelectionViewController.swift; sourceTree = "<group>"; };
-		BD84F5A823A58FCD00246F09 /* RandomForestMagnets.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = RandomForestMagnets.mlmodel; sourceTree = "<group>"; };
 		BD9EB55B23A4B34F000900D5 /* GameCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenter.swift; sourceTree = "<group>"; };
 		BDBF39B323A4676B008390CA /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
-		BDBF39B723A483FE008390CA /* CharcterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharcterViewController.swift; sourceTree = "<group>"; };
+		BDBFB6CA23A735DA005C38DB /* RandomForestMotion.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = RandomForestMotion.mlmodel; sourceTree = "<group>"; };
+		BDBFB6CC23A73636005C38DB /* RandomForestMagnets.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = RandomForestMagnets.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,7 +73,6 @@
 				36ED7EB52374F7730078BA7D /* ViewController.swift */,
 				BD622F1523A178F00047BBC2 /* GameTypeSelectionViewController.swift */,
 				BDBF39B323A4676B008390CA /* MapViewController.swift */,
-				BDBF39B723A483FE008390CA /* CharcterViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -107,8 +104,8 @@
 		36ECAEF5238827AE00E1B4E5 /* model */ = {
 			isa = PBXGroup;
 			children = (
-				BD84F5A823A58FCD00246F09 /* RandomForestMagnets.mlmodel */,
-				36ECAEF62388283100E1B4E5 /* RandomForest.mlmodel */,
+				BDBFB6CA23A735DA005C38DB /* RandomForestMotion.mlmodel */,
+				BDBFB6CC23A73636005C38DB /* RandomForestMagnets.mlmodel */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -226,19 +223,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BDBFB6CD23A73636005C38DB /* RandomForestMagnets.mlmodel in Sources */,
 				36EFC1A42377D470003192D9 /* OperationOverload.swift in Sources */,
 				36EFC1A0237613BF003192D9 /* GameScene.swift in Sources */,
 				BD622F1423A178BD0047BBC2 /* MultiplayerManager.swift in Sources */,
-				BDBF39B823A483FE008390CA /* CharcterViewController.swift in Sources */,
 				3663001E237A904C00028310 /* GameOverScene.swift in Sources */,
-				BD84F5A923A58FCE00246F09 /* RandomForestMagnets.mlmodel in Sources */,
 				36622658237B492B00369028 /* FTButtonNode.swift in Sources */,
 				36ECAEF42386F88400E1B4E5 /* RingBuffer.swift in Sources */,
+				BDBFB6CB23A735DA005C38DB /* RandomForestMotion.mlmodel in Sources */,
 				36ED7EB62374F7730078BA7D /* ViewController.swift in Sources */,
 				366300162379E07300028310 /* extension.swift in Sources */,
 				BD622F1623A178F00047BBC2 /* GameTypeSelectionViewController.swift in Sources */,
 				3663001C237A1D9000028310 /* AnalogJoystick.swift in Sources */,
-				36ECAEF72388283100E1B4E5 /* RandomForest.mlmodel in Sources */,
 				36622654237B207200369028 /* GameBeginScene.swift in Sources */,
 				BD622F1223A178830047BBC2 /* ConnectionManager.swift in Sources */,
 				BD9EB55C23A4B34F000900D5 /* GameCenter.swift in Sources */,
