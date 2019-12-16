@@ -50,7 +50,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     lazy var motionMagnitude = Double()
     
     let impulseThreshold: CGFloat = 1   // Threshold for dectecting pet hitting the wall
-    let magThreshold: Double = 1        // The motion should be large enough to be detected
+    let magThreshold: Double = 0.1        // The motion should be large enough to be detected
     
     lazy var isWaitingForMotionData: Bool = true
     
@@ -80,8 +80,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         
         speechRecognizer.delegate = self
         
-        
-        //map selector
+                //map selector
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         //map for multiplayer
         if selectedMap != nil {
@@ -291,13 +290,12 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
         if self.motion.isAccelerometerAvailable{
             
-            self.motion.accelerometerUpdateInterval = 0.02
+            self.motion.accelerometerUpdateInterval = 1.0/200
             
             self.motion.startDeviceMotionUpdates(to: motionOperationQueue, withHandler: handler)
             
         }
     }
-    
     
     // Magneto updates for rabbit
     func startMagnetoUpdate(withHandler handler: @escaping CMDeviceMotionHandler){
@@ -554,6 +552,12 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     }
     
     
+    // we need a direction Map for the inconsistence of traing and playing the game
+    let directionMap = ["up"    :  "left",
+                        "right" :  "up",
+                        "down"  :  "right",
+                        "left"  :  "down"]
+    
     
     func largeMotionEventOccurred(){
         if(self.isWaitingForMotionData)
@@ -565,39 +569,18 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
                 fatalError("Error with RFMotion prediction error.")
             }
             
-            moveHamster(outputRF.classLabel)
+            if let moveDirection = directionMap[outputRF.classLabel]{
+                self.pet.applyImpulse(to: moveDirection, by: petImpulse.hamster)
+            }
             
-            setDelayedWaitingToTrue(2.0)    // set latency in mainQueue for detecting next hamsterMotion
+            // don't predict the next pat immediatly
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                self.isWaitingForMotionData = true
+            })
             
         }
     }
     
-    
-    func moveHamster(_ response:String){
-        
-        // The difference of direction is because of the training model process
-        
-        switch response {
-        case "tapUp":
-            self.pet.applyImpulse(to: "left", by: petImpulse.hamster)
-        case "tapRight":
-            self.pet.applyImpulse(to: "up", by: petImpulse.hamster)
-        case "tapDown":
-            self.pet.applyImpulse(to: "right", by: petImpulse.hamster)
-        case "tapLeft":
-            self.pet.applyImpulse(to: "down", by: petImpulse.hamster)
-        case "patUp":
-            self.pet.applyImpulse(to: "left", by: petImpulse.hamsterRun)
-        case "patRight":
-            self.pet.applyImpulse(to: "up", by: petImpulse.hamsterRun)
-        case "patDown":
-            self.pet.applyImpulse(to: "right", by: petImpulse.hamsterRun)
-        case "patLeft":
-            self.pet.applyImpulse(to: "down", by: petImpulse.hamsterRun)
-        default:
-            print("unkown direction")
-        }
-    }
     
     
     //MARK: add Rabbit
@@ -624,22 +607,36 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     }
     
     
-    func rabbitMotionHandler(_ motionData:CMDeviceMotion?, error:Error?){
-        if let magneto = motionData?.magneticField{
-            
-            let fieldData = [magneto.field.x, magneto.field.y, magneto.field.z]
-            
-            let seq = toMLMultiArray(fieldData, featureNum: 3)
-            
-            guard let outputRF = try? RFMagnets.prediction(input: seq) else {
-                fatalError("Error with RFMagnets prediction")
-            }
-            
-            // func applyImpulse(to direction: String, by impulse: CGFloat)
-            self.pet.applyImpulse(to: outputRF.classLabel, by: petImpulse.rabbit)
-        }
-    }
-    
+    // x, y, z field data
+     var fieldData: [Double]!
+     
+     // sum of abs value from x, y, z
+     var magnetoMagnitude: Double!
+     
+     // Threshold for dectecting if there is a magnet
+     let magnetoThreshold: Double = 150
+     
+     func rabbitMotionHandler(_ motionData:CMDeviceMotion?, error:Error?){
+         if let magneto = motionData?.magneticField{
+             
+             fieldData = [magneto.field.x, magneto.field.y, magneto.field.z]
+             
+             magnetoMagnitude = fieldData.map{abs($0)}.reduce(0,+)
+             
+             if magnetoMagnitude > magnetoThreshold{
+                 let seq = toMLMultiArray(fieldData, featureNum: 3)
+                 
+                 guard let outputRF = try? RFMagnets.prediction(input: seq) else {
+                     fatalError("Error with RFMagnets prediction")
+                 }
+                 
+                 // func applyImpulse(to direction: String, by impulse: CGFloat)
+                 
+                 self.pet.applyImpulse(to: outputRF.classLabel, by: petImpulse.rabbit)
+             }
+             
+         }
+     }
     
     // convert to ML Multi array
     // https://github.com/akimach/GestureAI-CoreML-iOS/blob/master/GestureAI/GestureViewController.swift
@@ -734,14 +731,29 @@ extension GameScene: SKPhysicsContactDelegate{
         
         // upload score to the game center
         
-
+//        // TODO: popover a window showing the result
+//        GameCenter.shared.updateScore(self.score, with: self.buddy, to: self.testMap.leaderBoardID)
+//        let leaderBoardInfo =  GameCenter.shared.loadScores(from: self.testMap.leaderBoardID)
+//        if leaderBoardInfo != nil{
+//            for info in leaderBoardInfo!{
+//                print(info)
+//            }
+//        }
+        
         let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
         let gameOverScene = GameOverScene(size: self.size, won: true, winner: "")
         self.cleanup()
         self.view?.presentScene(gameOverScene, transition: reveal)
     }
     
-
+//    func calculateTime(_ endTime: Date?) {
+//        var score = 0
+//        if endTime != nil && startTime != nil {
+//            score = Int((endTime?.timeIntervalSince(startTime!))!)
+//        }
+//        MultiplayerManager.sharedManager.sendMyScore(score)
+//    }
+    
     
     // stop core motion, audioEngine, etc
     func cleanup(){
