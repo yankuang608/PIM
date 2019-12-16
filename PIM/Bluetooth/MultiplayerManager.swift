@@ -85,7 +85,7 @@ extension MultiplayerManager {
             let randomMap = Int.random(in: 0...5)
             delegate?.mapSelected?(map: randomMap)
             ConnectionManager.sharedManager.send(["map": randomMap])
-        }
+        } 
     }
     
     @objc func didReceiveDataNotification(_ notification: Notification) {
