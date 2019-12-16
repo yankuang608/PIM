@@ -28,6 +28,8 @@ class GameOverScene: SKScene {
         label.position = CGPoint(x: size.width/2, y: size.height/2)
         addChild(label)
         
+        
+        
         // 4
         run(SKAction.sequence([
             SKAction.wait(forDuration: 5.0),

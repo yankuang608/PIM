@@ -28,6 +28,7 @@
 		BDBF39B423A4676B008390CA /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBF39B323A4676B008390CA /* MapViewController.swift */; };
 		BDBFB6CB23A735DA005C38DB /* RandomForestMotion.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = BDBFB6CA23A735DA005C38DB /* RandomForestMotion.mlmodel */; };
 		BDBFB6CD23A73636005C38DB /* RandomForestMagnets.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = BDBFB6CC23A73636005C38DB /* RandomForestMagnets.mlmodel */; };
+		BDBFB6CF23A77D8A005C38DB /* BGM.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BDBFB6CE23A77D89005C38DB /* BGM.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,7 @@
 		BDBF39B323A4676B008390CA /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		BDBFB6CA23A735DA005C38DB /* RandomForestMotion.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = RandomForestMotion.mlmodel; sourceTree = "<group>"; };
 		BDBFB6CC23A73636005C38DB /* RandomForestMagnets.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = RandomForestMagnets.mlmodel; sourceTree = "<group>"; };
+		BDBFB6CE23A77D89005C38DB /* BGM.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = BGM.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +140,7 @@
 				36ED7EB72374F7730078BA7D /* Main.storyboard */,
 				36ED7EBC2374F7740078BA7D /* LaunchScreen.storyboard */,
 				36ED7EBF2374F7740078BA7D /* Info.plist */,
+				BDBFB6CE23A77D89005C38DB /* BGM.mp3 */,
 				36ED7EBA2374F7740078BA7D /* Assets.xcassets */,
 			);
 			path = PIM;
@@ -212,6 +215,7 @@
 			files = (
 				36ED7EBE2374F7740078BA7D /* LaunchScreen.storyboard in Resources */,
 				36ED7EBB2374F7740078BA7D /* Assets.xcassets in Resources */,
+				BDBFB6CF23A77D8A005C38DB /* BGM.mp3 in Resources */,
 				36ED7EB92374F7730078BA7D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

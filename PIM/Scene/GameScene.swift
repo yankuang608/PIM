@@ -95,6 +95,11 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
         
         addHealthBar()
         
+        let backgroundMusic = SKAudioNode(fileNamed: "BGM.mp3")
+        self.addChild(backgroundMusic)
+        
+        backgroundMusic.run(SKAction.play())
+        
         switch buddy {
         case "hedgehog":
             addHedgehog()
