@@ -314,7 +314,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     //MARK: add hedgehog
     func hedgeHogMotionHandler(_ motionData: CMDeviceMotion?, error: Error?){
         guard let gravity = motionData?.gravity else { return }
-        self.physicsWorld.gravity = CGVector(dx: gravity.y * 9.8, dy: -(gravity.x * 9.8)) //using landscape pay attention with the xyz direction
+        self.physicsWorld.gravity = CGVector(dx: gravity.y * 4, dy: -(gravity.x * 4)) //using landscape pay attention with the xyz direction
     }
     
     
@@ -365,7 +365,7 @@ class GameScene: SKScene, SFSpeechRecognizerDelegate{
     
     
     func addJoyStick(){
-        let velocityMultiplier: CGFloat = 0.05
+        let velocityMultiplier: CGFloat = 0.035
         let joystick = AnalogJoystick(diameter: buttonSize.width, colors: nil,
                                       images: (UIImage(named: "substrate"), UIImage(named:"stick")))
         joystick.position = buttonPosition
@@ -727,8 +727,6 @@ extension GameScene: SKPhysicsContactDelegate{
             MultiplayerManager.sharedManager.sendMyScore(0)
             MultiplayerManager.sharedManager.delegate = nil
             
-            score = Date().timeIntervalSince(startDate)
-            
             
             let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
             let gameOverScene = GameOverScene(size: self.size, won: true, winner: "")
@@ -747,14 +745,21 @@ extension GameScene: SKPhysicsContactDelegate{
             // show The leaderBoard
             showLeaderBoard()
             
-            let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
-            let gameOverScene = GameOverScene(size: self.size, won: true, winner: "")
-            self.cleanup()
-            self.view?.presentScene(gameOverScene, transition: reveal)
+            toGameOverScene()
             
         }
         
     }
+    
+    
+    // transfer to GameOverScene
+    func toGameOverScene() {
+        let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+        let gameOverScene = GameOverScene(size: self.size, won: true, winner: "")
+        self.cleanup()
+        self.view?.presentScene(gameOverScene, transition: reveal)
+    }
+    
     
     func showLeaderBoard() {
         let viewController = self.view?.window?.rootViewController
