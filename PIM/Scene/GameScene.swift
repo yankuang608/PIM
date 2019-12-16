@@ -11,6 +11,7 @@ import SpriteKit
 import CoreMotion
 import Speech
 import CoreML
+import GameKit
 
 
 
@@ -721,39 +722,53 @@ extension GameScene: SKPhysicsContactDelegate{
     }
     
     func petReachFinishLine(){
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        if appDelegate.multiplayer == true {
         MultiplayerManager.sharedManager.sendMyScore(0)
-        
         MultiplayerManager.sharedManager.delegate = nil
+            
+            score = Date().timeIntervalSince(startDate)
+
+            
+            let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+                   let gameOverScene = GameOverScene(size: self.size, won: true, winner: "")
+                   self.cleanup()
+                   self.view?.presentScene(gameOverScene, transition: reveal)
         
+        } else {
+          // record the score for this round of game
         
-        // record the score for this round of game
         score = Date().timeIntervalSince(startDate)
         
         // upload score to the game center
         
-//        // TODO: popover a window showing the result
-//        GameCenter.shared.updateScore(self.score, with: self.buddy, to: self.testMap.leaderBoardID)
-//        let leaderBoardInfo =  GameCenter.shared.loadScores(from: self.testMap.leaderBoardID)
-//        if leaderBoardInfo != nil{
-//            for info in leaderBoardInfo!{
-//                print(info)
-//            }
-//        }
+        DispatchQueue.global(qos: .background).async {
+            GameCenter.shared.updateScore(self.score, with: self.buddy, to: MapEasy.leaderBoardID)
+        }
         
-        let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
-        let gameOverScene = GameOverScene(size: self.size, won: true, winner: "")
-        self.cleanup()
-        self.view?.presentScene(gameOverScene, transition: reveal)
+        // show The leaderBoard
+        showLeaderBoard()
+            let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+            let gameOverScene = GameOverScene(size: self.size, won: true, winner: "")
+            self.cleanup()
+            self.view?.presentScene(gameOverScene, transition: reveal)
+            
+        }
+
     }
     
-//    func calculateTime(_ endTime: Date?) {
-//        var score = 0
-//        if endTime != nil && startTime != nil {
-//            score = Int((endTime?.timeIntervalSince(startTime!))!)
-//        }
-//        MultiplayerManager.sharedManager.sendMyScore(score)
-//    }
-    
+    func showLeaderBoard(){
+           let viewController = self.view?.window?.rootViewController
+           let gcvc = GKGameCenterViewController()
+           let appDelegate = UIApplication.shared.delegate as! AppDelegate
+           
+           gcvc.leaderboardIdentifier = appDelegate.map.leaderBoardID
+           
+           gcvc.gameCenterDelegate = self as? GKGameCenterControllerDelegate
+           
+           viewController?.present(gcvc, animated: true, completion: nil)
+           
+       }
     
     // stop core motion, audioEngine, etc
     func cleanup(){
