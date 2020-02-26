@@ -1,6 +1,6 @@
 # PIM
 Pet in Maze game.
-A quick Demo:https://youtu.be/PCB0ibtaCeE
+A quick Demo:https://youtu.be/PCB0ibtaCeE or https://www.bilibili.com/video/av91858030
 Final project is in the final branch
 
 How to play:
